@@ -2,7 +2,6 @@
 
 namespace alexshadie\telegram\bot;
 
-use alexshadie\telegram\objects\Bot;
 use alexshadie\telegram\objects\User;
 use alexshadie\telegram\query\Update;
 use Monolog\Logger;
@@ -17,11 +16,21 @@ class LongPollingBot
     /** @var Logger */
     private $logger;
 
-    public function __construct($bot_name, $bot_key, Logger $logger)
+    /**
+     * Id of last received update
+     * @var int
+     */
+    private $last_received_update = null;
+
+    public function __construct($bot_name, $bot_key, Logger $logger = null)
     {
         $this->bot_name = $bot_name;
         $this->bot_key = $bot_key;
-        $this->logger = $logger;
+        if (is_null($logger)) {
+            $this->logger = new Logger(__CLASS__);
+        } else {
+            $this->logger = $logger;
+        }
     }
 
     /**
@@ -42,7 +51,17 @@ class LongPollingBot
     public function getUpdates(?int $offset = null, int $limit = 100, int $timeout = 0) {
         $data = $this->query("getUpdates", ['offset' => $offset, 'limit' => $limit, 'timeout' => $timeout]);
         $updates = Update::createFromObjectList($data->result);
+        $this->last_received_update = end($updates)->getUpdateId();
         return $updates;
+    }
+
+    /**
+     * @param int $limit
+     * @param int $timeout
+     * @return Update[]|null
+     */
+    public function getNewUpdates(int $limit = 100, int $timeout = 0) {
+        return $this->getUpdates($this->last_received_update, $limit, $timeout);
     }
 
     protected function query($method_name, array $data = [], $http_method = 'POST') {

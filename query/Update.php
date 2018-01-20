@@ -3,7 +3,6 @@
 namespace alexshadie\telegram\query;
 
 use alexshadie\telegram\objects\Object;
-use alexshadie\telegram\query\Message;
 
 /**
  * Этот объект представляет из себя входящее обновление. Под обновлением подразумевается действие,
@@ -41,6 +40,46 @@ class Update extends Object
      * @var CallbackQuery|null
      */
     private $callback_query;
+
+    /**
+     * @return int
+     */
+    public function getUpdateId(): int
+    {
+        return $this->update_id;
+    }
+
+    /**
+     * @return Message|null
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * @return InlineQuery|null
+     */
+    public function getInlineQuery()
+    {
+        return $this->inline_query;
+    }
+
+    /**
+     * @return ChosenInlineResult|null
+     */
+    public function getChosenInlineResult()
+    {
+        return $this->chosen_inline_result;
+    }
+
+    /**
+     * @return CallbackQuery|null
+     */
+    public function getCallbackQuery()
+    {
+        return $this->callback_query;
+    }
 
     /**
      * @param $data
