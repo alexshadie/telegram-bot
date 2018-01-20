@@ -1,0 +1,24 @@
+{
+    "name": "alexshadie/telegram-bot",
+    "description": "Telegram bot API implementation",
+    "type": "library",
+    "stability": "dev",
+    "authors": [
+        {
+            "name": "Alex Shadie",
+            "email": "alex@astra.ws"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "ext-pdo": "*",
+        "ext-curl": "*",
+        "ext-mbstring": "*",
+        "monolog/monolog": "^1.17"
+    },
+    "autoload": {
+        "psr-4": {
+            "alexshadie\\telegram\\": ""
+        }
+    }
+}
