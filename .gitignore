@@ -28,4 +28,4 @@ phpunit.phar
 # local phpunit config
 /phpunit.xml
 
-test.php
+auth.php

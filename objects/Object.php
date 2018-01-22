@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: alextolmachov
- * Date: 20.01.18
- * Time: 15:18
- */
 
 namespace alexshadie\telegram\objects;
 
@@ -17,6 +11,11 @@ class Object
             $result[] = $var_name;
         }
         return $result;
+    }
+
+    public function __toString()
+    {
+        return $this->toString(0);
     }
 
     public function toString($indent = 0) {

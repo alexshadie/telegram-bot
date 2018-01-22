@@ -8,89 +8,55 @@ use Monolog\Logger;
 
 class LongPollingBot
 {
-    const TELEGRAM_URL = "https://api.telegram.org";
-    /** @var string */
-    private $bot_name;
-    /** @var string */
-    private $bot_key;
-    /** @var Logger */
+    /**
+     * @var LongPollingBotApi
+     */
+    private $botApi;
+    /**
+     * @var bool
+     */
+    private $stop;
+
+    /**
+     * @var Logger
+     */
     private $logger;
 
-    /**
-     * Id of last received update
-     * @var int
-     */
-    private $last_received_update = null;
-
-    public function __construct($bot_name, $bot_key, Logger $logger = null)
+    public function __construct(string $bot_name, string $bot_key, Logger $logger)
     {
-        $this->bot_name = $bot_name;
-        $this->bot_key = $bot_key;
-        if (is_null($logger)) {
-            $this->logger = new Logger(__CLASS__);
-        } else {
-            $this->logger = $logger;
+        $this->botApi = new LongPollingBotApi($bot_name, $bot_key, $this->logger = $logger);
+    }
+
+    public function getMe() : User
+    {
+        return $this->botApi->getMe();
+    }
+
+    public function run() : void
+    {
+        $this->stop = false;
+        while (!$this->stop) {
+            $updates = $this->botApi->getNewUpdates();
+
+            if (count($updates)) {
+                foreach ($updates as $update) {
+                    $this->handleUpdate($update);
+                }
+            } else {
+                $this->logger->debug("No updates");
+                usleep(100000); // sleep for 100 msec
+            }
         }
     }
 
-    /**
-     * @return User
-     */
-    public function getMe() {
-        $data = $this->query("getMe");
-        $bot = User::createFromObject($data->result);
-        return $bot;
+    public function stop() : void
+    {
+        $this->stop = true;
     }
 
-    /**
-     * @param int|null $offset
-     * @param int $limit
-     * @param int $timeout
-     * @return Update[]|null
-     */
-    public function getUpdates(?int $offset = null, int $limit = 100, int $timeout = 0) {
-        $data = $this->query("getUpdates", ['offset' => $offset, 'limit' => $limit, 'timeout' => $timeout]);
-        $updates = Update::createFromObjectList($data->result);
-        $this->last_received_update = end($updates)->getUpdateId();
-        return $updates;
-    }
-
-    /**
-     * @param int $limit
-     * @param int $timeout
-     * @return Update[]|null
-     */
-    public function getNewUpdates(int $limit = 100, int $timeout = 0) {
-        return $this->getUpdates($this->last_received_update, $limit, $timeout);
-    }
-
-    protected function query($method_name, array $data = [], $http_method = 'POST') {
-        $url = self::TELEGRAM_URL . '/bot' . $this->bot_key . '/' . $method_name;
-        $this->logger->debug("Quering {$url}, method: {$http_method}");
-        $ch = curl_init($url);
-        switch ($http_method) {
-            default:
-                $this->logger->debug("Params: " . http_build_query($data));
-                curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-        }
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $server_output = curl_exec ($ch);
-        $curl_error = curl_error($ch);
-
-        curl_close ($ch);
-
-        if ($curl_error) {
-            throw new \ErrorException("Curl error: " . $curl_error);
-        }
-
-        $data = json_decode($server_output);
-
-        if (!isset($data->ok) || !$data->ok) {
-            throw new \ErrorException("Telegram response error");
-        }
-
-        return $data;
+    public function handleUpdate(Update $update) : bool
+    {
+        echo $update;
+        return true;
     }
 }
