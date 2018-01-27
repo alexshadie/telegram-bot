@@ -9,7 +9,7 @@ use alexshadie\TelegramBot\Query\Message;
 class MessageDispatcher implements MessageDispatcherInterface
 {
     /**
-     * @var MessageHandler[]
+     * @var MessageHandler[][]
      */
     private $handlers = [];
 
@@ -21,16 +21,21 @@ class MessageDispatcher implements MessageDispatcherInterface
         $this->botApi = $botApi;
     }
 
-    public function addHandler(MessageHandler $handler) : void {
-        $this->handlers[] = $handler;
+    public function addHandler(MessageHandler $handler, int $priority = 100) : void {
+        if (!isset($this->handlers[$priority])) {
+            $this->handlers[$priority] = [];
+        }
+        $this->handlers[$priority][] = $handler;
     }
 
     public function dispatch(Message $message) : void {
-        foreach ($this->handlers as $handler) {
-            if ($handler->isSuitable($message)) {
-                $handler->handle($message, $this->botApi);
-                if ($handler->isTerminator()) {
-                    return;
+        foreach ($this->handlers as $handlerList) {
+            foreach ($handlerList as $handler) {
+                if ($handler->isSuitable($message)) {
+                    $handler->handle($message, $this->botApi);
+                    if ($handler->isTerminator()) {
+                        return;
+                    }
                 }
             }
         }
