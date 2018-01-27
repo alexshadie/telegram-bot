@@ -1,20 +1,20 @@
 <?php
 
-namespace alexshadie\TelegramBot\query;
+namespace alexshadie\TelegramBot\Query;
 
-use alexshadie\TelegramBot\objects\Object;
-use alexshadie\TelegramBot\message\Audio;
-use alexshadie\TelegramBot\message\Contact;
-use alexshadie\TelegramBot\message\Document;
-use alexshadie\TelegramBot\message\Sticker;
-use alexshadie\TelegramBot\message\Venue;
-use alexshadie\TelegramBot\message\Video;
-use alexshadie\TelegramBot\message\Voice;
-use alexshadie\TelegramBot\objects\Chat;
-use alexshadie\TelegramBot\type\Location;
-use alexshadie\TelegramBot\objects\MessageEntity;
-use alexshadie\TelegramBot\objects\User;
-use alexshadie\TelegramBot\type\PhotoSize;
+use alexshadie\TelegramBot\Objects\Object;
+use alexshadie\TelegramBot\Message\Audio;
+use alexshadie\TelegramBot\Message\Contact;
+use alexshadie\TelegramBot\Message\Document;
+use alexshadie\TelegramBot\Message\Sticker;
+use alexshadie\TelegramBot\Message\Venue;
+use alexshadie\TelegramBot\Message\Video;
+use alexshadie\TelegramBot\Message\Voice;
+use alexshadie\TelegramBot\Objects\Chat;
+use alexshadie\TelegramBot\Type\Location;
+use alexshadie\TelegramBot\Objects\MessageEntity;
+use alexshadie\TelegramBot\Objects\User;
+use alexshadie\TelegramBot\Type\PhotoSize;
 
 /**
  * Class Message

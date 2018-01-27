@@ -1,8 +1,8 @@
 <?php
 
-namespace alexshadie\TelegramBot\keyboard;
+namespace alexshadie\TelegramBot\Keyboard;
 
-use alexshadie\TelegramBot\objects\Object;
+use alexshadie\TelegramBot\Objects\Object;
 
 /**
  * Class ReplyKeyboardMarkup

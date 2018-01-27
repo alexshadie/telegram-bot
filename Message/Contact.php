@@ -1,7 +1,7 @@
 <?php
-namespace alexshadie\TelegramBot\message;
+namespace alexshadie\TelegramBot\Message;
 
-use alexshadie\TelegramBot\objects\Object;
+use alexshadie\TelegramBot\Objects\Object;
 
 /**
  * Этот объект представляет контакт с номером телефона.

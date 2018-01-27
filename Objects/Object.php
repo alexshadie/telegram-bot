@@ -1,6 +1,6 @@
 <?php
 
-namespace alexshadie\TelegramBot\objects;
+namespace alexshadie\TelegramBot\Objects;
 
 
 class Object

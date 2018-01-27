@@ -1,9 +1,12 @@
 <?php
 
-namespace alexshadie\TelegramBot\bot;
+namespace alexshadie\TelegramBot\Bot;
 
-use alexshadie\TelegramBot\objects\User;
-use alexshadie\TelegramBot\query\Update;
+use alexshadie\TelegramBot\MessageDispatcher\EchoMessageHandler;
+use alexshadie\TelegramBot\MessageDispatcher\MessageDispatcher;
+use alexshadie\TelegramBot\MessageDispatcher\MessageDispatcherInterface;
+use alexshadie\TelegramBot\Objects\User;
+use alexshadie\TelegramBot\Query\Update;
 use Psr\Log\LoggerInterface;
 
 class LongPollingBot
@@ -22,9 +25,20 @@ class LongPollingBot
      */
     private $logger;
 
-    public function __construct(string $bot_name, string $bot_key, LoggerInterface $logger)
+    /**
+     * @var MessageDispatcherInterface
+     */
+    private $messageDispatcher;
+
+    public function __construct(
+        LongPollingBotApi $botApi,
+        MessageDispatcherInterface $messageDispatcher,
+        LoggerInterface $logger
+    )
     {
-        $this->botApi = new LongPollingBotApi($bot_name, $bot_key, $this->logger = $logger);
+        $this->botApi = $botApi;
+        $this->messageDispatcher = $messageDispatcher;
+        $this->logger = $logger;
     }
 
     public function getMe() : User
@@ -57,13 +71,16 @@ class LongPollingBot
     public function handleUpdate(Update $update) : bool
     {
         if ($update->getMessage()) {
+            $this->messageDispatcher->dispatch($update->getMessage());
             $this->logger->debug("Message received");
-            if ($messageText = $update->getMessage()->getText()) {
-                $this->logger->info("Text message received");
-                $this->logger->info("\033[31mContent: '{$messageText}'\033[0m");
-            } else {
-                $this->logger->debug("Unsupported message received");
-            }
+//            if ($messageText = $update->getMessage()->getText()) {
+//                $this->logger->info("Text message received");
+//                $this->logger->info("\033[31mContent: '{$messageText}'\033[0m");
+//
+//                $this->botApi->message($update->getMessage()->getChat()->getId(), "Hello!");
+//            } else {
+//                $this->logger->debug("Unsupported message received");
+//            }
         } else {
             $this->logger->debug("Unsupported query");
             echo $update;

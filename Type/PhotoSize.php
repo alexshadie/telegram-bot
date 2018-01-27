@@ -1,8 +1,8 @@
 <?php
 
-namespace alexshadie\TelegramBot\type;
+namespace alexshadie\TelegramBot\Type;
 
-use alexshadie\TelegramBot\objects\Object;
+use alexshadie\TelegramBot\Objects\Object;
 
 /**
  * Class PhotoSize

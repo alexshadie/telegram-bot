@@ -1,8 +1,8 @@
 <?php
 
-namespace alexshadie\TelegramBot\query;
+namespace alexshadie\TelegramBot\Query;
 
-use alexshadie\TelegramBot\objects\Object;
+use alexshadie\TelegramBot\Objects\Object;
 
 /**
  * Этот объект представляет из себя входящее обновление. Под обновлением подразумевается действие,

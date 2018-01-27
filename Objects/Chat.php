@@ -1,8 +1,8 @@
 <?php
 
-namespace alexshadie\TelegramBot\objects;
+namespace alexshadie\TelegramBot\Objects;
 
-use alexshadie\TelegramBot\objects\Object;
+use alexshadie\TelegramBot\Objects\Object;
 
 /**
  * Class Chat
@@ -46,4 +46,84 @@ class Chat extends Object
      * @var bool|null
      */
     private $all_members_are_administrators;
+
+    /**
+     * @param $data
+     * @return Chat|null
+     */
+    public static function createFromObject($data)
+    {
+        if (is_null($data)) {
+            return null;
+        }
+
+        $chat = new Chat();
+
+        $chat->id = $data->id;
+        $chat->type = $data->type;
+        $chat->title = $data->title ?? null;
+        $chat->username = $data->username ?? null;
+        $chat->first_name = $data->first_name ?? null;
+        $chat->last_name = $data->last_name ?? null;
+        $chat->all_members_are_administrators = $data->all_members_are_administrators ?? null;
+
+        return $chat;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getFirstName()
+    {
+        return $this->first_name;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getLastName()
+    {
+        return $this->last_name;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getAllMembersAreAdministrators()
+    {
+        return $this->all_members_are_administrators;
+    }
+
 }

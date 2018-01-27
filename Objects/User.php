@@ -1,8 +1,8 @@
 <?php
 
-namespace alexshadie\TelegramBot\objects;
+namespace alexshadie\TelegramBot\Objects;
 
-use alexshadie\TelegramBot\objects\Object;
+use alexshadie\TelegramBot\Objects\Object;
 
 /**
  * Class User

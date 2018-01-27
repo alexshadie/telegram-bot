@@ -1,8 +1,8 @@
 <?php
 
-namespace alexshadie\TelegramBot\query;
+namespace alexshadie\TelegramBot\Query;
 
-use alexshadie\TelegramBot\objects\Object;
+use alexshadie\TelegramBot\Objects\Object;
 
 /**
  * Class ForceReply
