@@ -7,9 +7,9 @@ list($bot_name, $bot_key) = include(__DIR__ . '/auth.php');
 
 $botApi = new \alexshadie\TelegramBot\Bot\LongPollingBotApi($bot_name, $bot_key, $logger);
 
-$messageDispatcher = new \alexshadie\TelegramBot\MessageDispatcher\MessageDispatcher();
+$messageDispatcher = new \alexshadie\TelegramBot\MessageDispatcher\MessageDispatcher($botApi);
 $messageDispatcher->addHandler(
-    new \alexshadie\TelegramBot\MessageDispatcher\EchoMessageHandler($botApi)
+    new \alexshadie\TelegramBot\MessageDispatcher\EchoMessageHandler()
 );
 
 $bot = new \alexshadie\TelegramBot\Bot\LongPollingBot($botApi,$messageDispatcher, $logger);
