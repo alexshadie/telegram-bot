@@ -31,4 +31,29 @@ class PhotoSize extends Object
      * @var int|null
      */
     private $file_size;
+
+    public static function createFromObject($data) {
+        if (is_null($data)) {
+            return null;
+        }
+        $photoSize = new PhotoSize();
+        $photoSize->file_id = $data->file_id;
+        $photoSize->width = $data->width;
+        $photoSize->height = $data->height;
+        $photoSize->file_size = $data->file_size ?? null;
+
+        return $photoSize;
+    }
+
+    public static function createFromObjectList($data)
+    {
+        if (is_null($data)) {
+            return null;
+        }
+        $photoSizes = [];
+        foreach ($data as $row) {
+            $photoSizes[] = self::createFromObject($row);
+        }
+        return $photoSizes;
+    }
 }

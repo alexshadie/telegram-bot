@@ -24,6 +24,7 @@ class MessageDispatcher implements MessageDispatcherInterface
     public function addHandler(MessageHandler $handler, int $priority = 100) : void {
         if (!isset($this->handlers[$priority])) {
             $this->handlers[$priority] = [];
+            ksort($this->handlers);
         }
         $this->handlers[$priority][] = $handler;
     }
