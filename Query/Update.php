@@ -91,7 +91,53 @@ class Update extends Object
         }
         $update = new Update();
         $update->update_id = $data->update_id;
-        $update->message = Message::createFromObject($data->message);
+        $update->message = Message::createFromObject($data->message ?? null);
+        /*
+object(stdClass)#32 (2) {
+  ["update_id"]=>
+  int(655017557)
+  ["edited_message"]=>
+  object(stdClass)#33 (6) {
+    ["message_id"]=>
+    int(94)
+    ["from"]=>
+    object(stdClass)#34 (6) {
+      ["id"]=>
+      int(258500651)
+      ["is_bot"]=>
+      bool(false)
+      ["first_name"]=>
+      string(4) "Alex"
+      ["last_name"]=>
+      string(6) "Shadie"
+      ["username"]=>
+      string(10) "alexshadie"
+      ["language_code"]=>
+      string(5) "en-US"
+    }
+    ["chat"]=>
+    object(stdClass)#35 (5) {
+      ["id"]=>
+      int(258500651)
+      ["first_name"]=>
+      string(4) "Alex"
+      ["last_name"]=>
+      string(6) "Shadie"
+      ["username"]=>
+      string(10) "alexshadie"
+      ["type"]=>
+      string(7) "private"
+    }
+    ["date"]=>
+    int(1517083670)
+    ["edit_date"]=>
+    int(1517083678)
+    ["text"]=>
+    string(16) "contractor: test"
+  }
+}
+         */
+//        $update->edited_message = null;// EditedMessage
         $update->inline_query = null;//InlineQuery::createFromObject($data->inline_query);
         $update->chosen_inline_result = null;//ChosenInlineResult::createFromObject($data->chosen_inline_result);
         $update->callback_query = null;//CallbackQuery::createFromObject($data->callback_query);

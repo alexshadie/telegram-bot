@@ -32,6 +32,38 @@ class PhotoSize extends Object
      */
     private $file_size;
 
+    /**
+     * @return string
+     */
+    public function getFileId(): string
+    {
+        return $this->file_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getWidth(): int
+    {
+        return $this->width;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHeight(): int
+    {
+        return $this->height;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getFileSize(): ?int
+    {
+        return $this->file_size;
+    }
+
     public static function createFromObject($data) {
         if (is_null($data)) {
             return null;

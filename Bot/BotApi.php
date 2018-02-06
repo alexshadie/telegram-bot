@@ -2,6 +2,7 @@
 
 namespace alexshadie\TelegramBot\Bot;
 
+use alexshadie\TelegramBot\Message\File;
 use alexshadie\TelegramBot\Query\Message;
 use Psr\Log\LoggerInterface;
 
@@ -58,6 +59,7 @@ class BotApi
      * @param int|string $chat_id
      * @param string $text
      * @return Message
+     * @throws \ErrorException
      */
     public function message($chat_id, string $text) : Message {
         $params = [
@@ -70,4 +72,12 @@ class BotApi
         return $message;
     }
 
+    public function getFile(string $fileId) {
+        $params = [
+            'file_id' => $fileId,
+        ];
+        $data = $this->query("getFile", $params);
+        $file = File::createFromObject($data->result);
+        return $file;
+    }
 }
