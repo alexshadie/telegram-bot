@@ -80,4 +80,8 @@ class BotApi
         $file = File::createFromObject($data->result);
         return $file;
     }
+
+    public function downloadFile(File $file, string $tmpPath) {
+        file_put_contents($tmpPath, fopen(self::TELEGRAM_URL . '/file/bot' . $this->bot_key . '/' . $file->getFilePath(), 'r'));
+    }
 }
