@@ -1,0 +1,4 @@
+cert/*
+!cert/.gitkeep
+
+auth.php

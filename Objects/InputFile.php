@@ -9,5 +9,15 @@ namespace alexshadie\TelegramBot\Objects;
  */
 class InputFile extends Object
 {
+    private $localFileName;
 
+    public function __construct($localFileName)
+    {
+        $this->localFileName = $localFileName;
+    }
+
+    public function getPostObject()
+    {
+        return new \CURLFile($this->localFileName);
+    }
 }

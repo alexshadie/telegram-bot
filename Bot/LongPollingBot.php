@@ -28,6 +28,12 @@ class LongPollingBot
      */
     private $messageDispatcher;
 
+    /**
+     * LongPollingBot constructor.
+     * @param LongPollingBotApi $botApi
+     * @param MessageDispatcherInterface $messageDispatcher
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         LongPollingBotApi $botApi,
         MessageDispatcherInterface $messageDispatcher,
@@ -39,11 +45,18 @@ class LongPollingBot
         $this->logger = $logger;
     }
 
+    /**
+     * @return User
+     * @throws \ErrorException
+     */
     public function getMe(): User
     {
         return $this->botApi->getMe();
     }
 
+    /**
+     * @throws \ErrorException
+     */
     public function run(): void
     {
         $this->stop = false;
@@ -61,19 +74,15 @@ class LongPollingBot
         }
     }
 
+    /**
+     * @param Update $update
+     * @return bool
+     */
     public function handleUpdate(Update $update): bool
     {
         if ($update->getMessage()) {
             $this->messageDispatcher->dispatch($update->getMessage());
             $this->logger->debug("Message received");
-//            if ($messageText = $update->getMessage()->getText()) {
-//                $this->logger->info("Text message received");
-//                $this->logger->info("\033[31mContent: '{$messageText}'\033[0m");
-//
-//                $this->botApi->message($update->getMessage()->getChat()->getId(), "Hello!");
-//            } else {
-//                $this->logger->debug("Unsupported message received");
-//            }
         } else {
             $this->logger->debug("Unsupported query");
             echo $update;
@@ -81,6 +90,9 @@ class LongPollingBot
         return true;
     }
 
+    /**
+     *
+     */
     public function stop(): void
     {
         $this->stop = true;

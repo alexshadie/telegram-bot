@@ -15,7 +15,8 @@
         "ext-curl": "*",
         "ext-mbstring": "*",
         "psr/log": "1.0.2",
-        "monolog/monolog": "^1.17"
+        "monolog/monolog": "^1.17",
+        "silex/silex": "^2.2"
     },
     "autoload": {
         "psr-4": {

@@ -16,6 +16,7 @@ class LongPollingBotApi extends BotApi
 
     /**
      * @return User
+     * @throws \ErrorException
      */
     public function getMe(): User
     {
@@ -28,6 +29,7 @@ class LongPollingBotApi extends BotApi
      * @param int $limit
      * @param int $timeout
      * @return Update[]|null
+     * @throws \ErrorException
      */
     public function getNewUpdates(int $limit = 100, int $timeout = 0): ?array
     {
@@ -39,6 +41,7 @@ class LongPollingBotApi extends BotApi
      * @param int $limit
      * @param int $timeout
      * @return Update[]|null
+     * @throws \ErrorException
      */
     public function getUpdates(?int $offset = null, int $limit = 100, int $timeout = 0): ?array
     {

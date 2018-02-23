@@ -1,9 +1,9 @@
 <?php
 
-require "vendor/autoload.php";
+require "../../vendor/autoload.php";
 
 $logger = new \Monolog\Logger("telegram-bot");
-list($bot_name, $bot_key) = include(__DIR__ . '/auth.php');
+list($bot_name, $bot_key) = include(__DIR__ . '/../auth.php');
 
 $botApi = new \alexshadie\TelegramBot\Bot\LongPollingBotApi($bot_name, $bot_key, $logger);
 

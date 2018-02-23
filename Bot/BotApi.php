@@ -3,6 +3,7 @@
 namespace alexshadie\TelegramBot\Bot;
 
 use alexshadie\TelegramBot\Message\File;
+use alexshadie\TelegramBot\Objects\InputFile;
 use alexshadie\TelegramBot\Query\Message;
 use Psr\Log\LoggerInterface;
 
@@ -41,6 +42,13 @@ class BotApi
         return $message;
     }
 
+    /**
+     * @param $method_name
+     * @param array $data
+     * @param string $http_method
+     * @return \stdClass
+     * @throws \ErrorException
+     */
     protected function query($method_name, array $data = [], $http_method = 'POST'): \stdClass
     {
         $url = self::TELEGRAM_URL . '/bot' . $this->bot_key . '/' . $method_name;
@@ -48,6 +56,16 @@ class BotApi
         $ch = curl_init($url);
 
         switch ($http_method) {
+            case 'POST':
+                foreach ($data as $key => $item) {
+                    if ($item instanceof InputFile) {
+                        $data[$key] = $item->getPostObject();
+                    }
+                }
+                $this->logger->debug("Params: " . http_build_query($data));
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+                break;
             default:
                 $this->logger->debug("Params: " . http_build_query($data));
                 curl_setopt($ch, CURLOPT_POST, 1);
@@ -74,7 +92,13 @@ class BotApi
         return $data;
     }
 
-    public function getFile(string $fileId)
+    /**
+     * TODO: Check for invalid file
+     * @param string $fileId
+     * @return File
+     * @throws \ErrorException
+     */
+    public function getFile(string $fileId) : File
     {
         $params = [
             'file_id' => $fileId,
@@ -84,7 +108,12 @@ class BotApi
         return $file;
     }
 
-    public function downloadFile(File $file, string $tmpPath)
+    /**
+     * TODO: Check for invalid file
+     * @param File $file
+     * @param string $tmpPath
+     */
+    public function downloadFile(File $file, string $tmpPath): void
     {
         file_put_contents($tmpPath, fopen(self::TELEGRAM_URL . '/file/bot' . $this->bot_key . '/' . $file->getFilePath(), 'r'));
     }
