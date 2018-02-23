@@ -2,8 +2,6 @@
 
 namespace alexshadie\TelegramBot\Bot;
 
-use alexshadie\TelegramBot\MessageDispatcher\EchoMessageHandler;
-use alexshadie\TelegramBot\MessageDispatcher\MessageDispatcher;
 use alexshadie\TelegramBot\MessageDispatcher\MessageDispatcherInterface;
 use alexshadie\TelegramBot\Objects\User;
 use alexshadie\TelegramBot\Query\Update;
@@ -41,12 +39,12 @@ class LongPollingBot
         $this->logger = $logger;
     }
 
-    public function getMe() : User
+    public function getMe(): User
     {
         return $this->botApi->getMe();
     }
 
-    public function run() : void
+    public function run(): void
     {
         $this->stop = false;
         while (!$this->stop) {
@@ -63,12 +61,7 @@ class LongPollingBot
         }
     }
 
-    public function stop() : void
-    {
-        $this->stop = true;
-    }
-
-    public function handleUpdate(Update $update) : bool
+    public function handleUpdate(Update $update): bool
     {
         if ($update->getMessage()) {
             $this->messageDispatcher->dispatch($update->getMessage());
@@ -86,5 +79,10 @@ class LongPollingBot
             echo $update;
         }
         return true;
+    }
+
+    public function stop(): void
+    {
+        $this->stop = true;
     }
 }

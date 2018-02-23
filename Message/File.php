@@ -30,6 +30,31 @@ class File extends Object
      */
     private $file_path;
 
+    public static function createFromObjectList($data)
+    {
+        if (is_null($data)) {
+            return null;
+        }
+        $files = [];
+        foreach ($data as $row) {
+            $files[] = self::createFromObject($row);
+        }
+        return $files;
+    }
+
+    public static function createFromObject($data)
+    {
+        if (is_null($data)) {
+            return null;
+        }
+        $file = new File();
+        $file->file_id = $data->file_id;
+        $file->file_size = $data->file_size ?? null;
+        $file->file_path = $data->file_path ?? null;
+
+        return $file;
+    }
+
     /**
      * @return string
      */
@@ -52,30 +77,5 @@ class File extends Object
     public function getFilePath(): ?string
     {
         return $this->file_path;
-    }
-
-    public static function createFromObject($data)
-    {
-        if (is_null($data)) {
-            return null;
-        }
-        $file = new File();
-        $file->file_id = $data->file_id;
-        $file->file_size = $data->file_size ?? null;
-        $file->file_path = $data->file_path ?? null;
-
-        return $file;
-    }
-
-    public static function createFromObjectList($data)
-    {
-        if (is_null($data)) {
-            return null;
-        }
-        $files = [];
-        foreach ($data as $row) {
-            $files[] = self::createFromObject($row);
-        }
-        return $files;
     }
 }

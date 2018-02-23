@@ -2,7 +2,6 @@
 
 namespace alexshadie\TelegramBot\Objects;
 
-use alexshadie\TelegramBot\Objects\Object;
 use alexshadie\TelegramBot\Type\PhotoSize;
 
 /**

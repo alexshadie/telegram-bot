@@ -5,7 +5,8 @@ namespace alexshadie\TelegramBot\Objects;
 
 class Object
 {
-    public static function getVars($class) {
+    public static function getVars($class)
+    {
         $result = [];
         foreach (get_class_vars($class) as $var_name => $var_value) {
             $result[] = $var_name;
@@ -13,12 +14,31 @@ class Object
         return $result;
     }
 
+    /**
+     * @param $data
+     * @return Object
+     */
+    public static function createFromObjectList($data)
+    {
+        return null;
+    }
+
+    /**
+     * @param $data
+     * @return Object
+     */
+    public static function createFromObject($data)
+    {
+        return null;
+    }
+
     public function __toString()
     {
         return $this->toString(0);
     }
 
-    public function toString($indent = 0) {
+    public function toString($indent = 0)
+    {
         $i = str_repeat("\t", $indent);
         $reflection = new \ReflectionClass($this);
         $vars = $reflection->getProperties();
@@ -38,21 +58,5 @@ class Object
 
         $return .= "{$i}]\n";
         return $return;
-    }
-
-    /**
-     * @param $data
-     * @return Object
-     */
-    public static function createFromObjectList($data) {
-        return null;
-    }
-
-    /**
-     * @param $data
-     * @return Object
-     */
-    public static function createFromObject($data) {
-        return null;
     }
 }

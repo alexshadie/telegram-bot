@@ -2,8 +2,6 @@
 
 namespace alexshadie\TelegramBot\Objects;
 
-use alexshadie\TelegramBot\Objects\Object;
-
 /**
  * Class MessageEntity
  * Этот объект представляет одну из особых сущностей в текстовом сообщении.

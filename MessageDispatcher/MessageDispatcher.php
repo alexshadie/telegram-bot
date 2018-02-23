@@ -21,7 +21,8 @@ class MessageDispatcher implements MessageDispatcherInterface
         $this->botApi = $botApi;
     }
 
-    public function addHandler(MessageHandler $handler, int $priority = 100) : void {
+    public function addHandler(MessageHandler $handler, int $priority = 100): void
+    {
         if (!isset($this->handlers[$priority])) {
             $this->handlers[$priority] = [];
             ksort($this->handlers);
@@ -29,7 +30,8 @@ class MessageDispatcher implements MessageDispatcherInterface
         $this->handlers[$priority][] = $handler;
     }
 
-    public function dispatch(Message $message) : void {
+    public function dispatch(Message $message): void
+    {
         foreach ($this->handlers as $handlerList) {
             foreach ($handlerList as $handler) {
                 if ($handler->isSuitable($message)) {

@@ -2,8 +2,6 @@
 
 namespace alexshadie\TelegramBot\Objects;
 
-use alexshadie\TelegramBot\Objects\Object;
-
 /**
  * Class Chat
  * Этот объект представляет собой чат.

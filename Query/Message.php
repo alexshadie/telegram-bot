@@ -2,7 +2,6 @@
 
 namespace alexshadie\TelegramBot\Query;
 
-use alexshadie\TelegramBot\Objects\Object;
 use alexshadie\TelegramBot\Message\Audio;
 use alexshadie\TelegramBot\Message\Contact;
 use alexshadie\TelegramBot\Message\Document;
@@ -11,9 +10,10 @@ use alexshadie\TelegramBot\Message\Venue;
 use alexshadie\TelegramBot\Message\Video;
 use alexshadie\TelegramBot\Message\Voice;
 use alexshadie\TelegramBot\Objects\Chat;
-use alexshadie\TelegramBot\Type\Location;
 use alexshadie\TelegramBot\Objects\MessageEntity;
+use alexshadie\TelegramBot\Objects\Object;
 use alexshadie\TelegramBot\Objects\User;
+use alexshadie\TelegramBot\Type\Location;
 use alexshadie\TelegramBot\Type\PhotoSize;
 
 /**
@@ -37,7 +37,7 @@ class Message extends Object
     private $forward_date;
     /** @var Message|null Для ответов: оригинальное сообщение. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply. */
     private $reply_to_message;
-    /** @var string|null Для текстовых сообщений: текст сообщения, 0-4096 символов*/
+    /** @var string|null Для текстовых сообщений: текст сообщения, 0-4096 символов */
     private $text;
     /** @var MessageEntity[]|null Для текстовых сообщений: особые сущности в тексте сообщения. */
     private $entities;
@@ -45,7 +45,7 @@ class Message extends Object
     private $audio;
     /** @var Document|null Информация о файле */
     private $document;
-    /** @var PhotoSize[]|null  */
+    /** @var PhotoSize[]|null */
     private $photo;
     /** @var Sticker|null Информация о стикере */
     private $sticker;
@@ -88,7 +88,8 @@ class Message extends Object
      * @param $data
      * @return Message|null
      */
-    public static function createFromObject($data) {
+    public static function createFromObject($data)
+    {
         if (is_null($data)) {
             return null;
         }
@@ -186,7 +187,7 @@ class Message extends Object
     /**
      * @return null|string
      */
-    public function getText() : ?string
+    public function getText(): ?string
     {
         return $this->text;
     }

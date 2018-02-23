@@ -7,7 +7,9 @@ use alexshadie\TelegramBot\Query\Message;
 
 interface MessageHandler
 {
-    public function isSuitable(Message $message) : bool;
-    public function handle(Message $message, BotApi $botApi) : void;
-    public function isTerminator() : bool;
+    public function isSuitable(Message $message): bool;
+
+    public function handle(Message $message, BotApi $botApi): void;
+
+    public function isTerminator(): bool;
 }

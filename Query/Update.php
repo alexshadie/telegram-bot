@@ -42,50 +42,27 @@ class Update extends Object
     private $callback_query;
 
     /**
-     * @return int
+     * @param $data
+     * @return Update[]|null
      */
-    public function getUpdateId(): int
+    public static function createFromObjectList($data)
     {
-        return $this->update_id;
-    }
-
-    /**
-     * @return Message|null
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    /**
-     * @return InlineQuery|null
-     */
-    public function getInlineQuery()
-    {
-        return $this->inline_query;
-    }
-
-    /**
-     * @return ChosenInlineResult|null
-     */
-    public function getChosenInlineResult()
-    {
-        return $this->chosen_inline_result;
-    }
-
-    /**
-     * @return CallbackQuery|null
-     */
-    public function getCallbackQuery()
-    {
-        return $this->callback_query;
+        if (is_null($data)) {
+            return null;
+        }
+        $updates = [];
+        foreach ($data as $row) {
+            $updates[] = self::createFromObject($row);
+        }
+        return $updates;
     }
 
     /**
      * @param $data
      * @return Update|null
      */
-    public static function createFromObject($data) {
+    public static function createFromObject($data)
+    {
         if (is_null($data)) {
             return null;
         }
@@ -143,18 +120,44 @@ object(stdClass)#32 (2) {
         $update->callback_query = null;//CallbackQuery::createFromObject($data->callback_query);
         return $update;
     }
+
     /**
-     * @param $data
-     * @return Update[]|null
+     * @return int
      */
-    public static function createFromObjectList($data) {
-        if (is_null($data)) {
-            return null;
-        }
-        $updates = [];
-        foreach ($data as $row) {
-            $updates[] = self::createFromObject($row);
-        }
-        return $updates;
+    public function getUpdateId(): int
+    {
+        return $this->update_id;
+    }
+
+    /**
+     * @return Message|null
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * @return InlineQuery|null
+     */
+    public function getInlineQuery()
+    {
+        return $this->inline_query;
+    }
+
+    /**
+     * @return ChosenInlineResult|null
+     */
+    public function getChosenInlineResult()
+    {
+        return $this->chosen_inline_result;
+    }
+
+    /**
+     * @return CallbackQuery|null
+     */
+    public function getCallbackQuery()
+    {
+        return $this->callback_query;
     }
 }

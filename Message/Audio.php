@@ -1,4 +1,5 @@
 <?php
+
 namespace alexshadie\TelegramBot\Message;
 
 use alexshadie\TelegramBot\Objects\Object;

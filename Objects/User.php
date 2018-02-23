@@ -2,8 +2,6 @@
 
 namespace alexshadie\TelegramBot\Objects;
 
-use alexshadie\TelegramBot\Objects\Object;
-
 /**
  * Class User
  * Этот объект представляет бота или пользователя Telegram
@@ -40,7 +38,8 @@ class User extends Object
      * @param $data
      * @return User
      */
-    public static function createFromObject($data) {
+    public static function createFromObject($data)
+    {
         if (is_null($data)) {
             return null;
         }

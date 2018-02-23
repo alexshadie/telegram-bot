@@ -23,7 +23,26 @@ class BotApi
         $this->logger = $logger;
     }
 
-    protected function query($method_name, array $data = [], $http_method = 'POST') : \stdClass {
+    /**
+     * @param int|string $chat_id
+     * @param string $text
+     * @return Message
+     * @throws \ErrorException
+     */
+    public function message($chat_id, string $text): Message
+    {
+        $params = [
+            'chat_id' => $chat_id,
+            'text' => $text,
+        ];
+
+        $data = $this->query("sendMessage", $params);
+        $message = Message::createFromObject($data->result);
+        return $message;
+    }
+
+    protected function query($method_name, array $data = [], $http_method = 'POST'): \stdClass
+    {
         $url = self::TELEGRAM_URL . '/bot' . $this->bot_key . '/' . $method_name;
         $this->logger->debug("Quering {$url}, method: {$http_method}");
         $ch = curl_init($url);
@@ -36,10 +55,10 @@ class BotApi
         }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        $server_output = curl_exec ($ch);
+        $server_output = curl_exec($ch);
         $curl_error = curl_error($ch);
 
-        curl_close ($ch);
+        curl_close($ch);
 
         if ($curl_error) {
             throw new \ErrorException("Curl error: " . $curl_error);
@@ -55,24 +74,8 @@ class BotApi
         return $data;
     }
 
-    /**
-     * @param int|string $chat_id
-     * @param string $text
-     * @return Message
-     * @throws \ErrorException
-     */
-    public function message($chat_id, string $text) : Message {
-        $params = [
-            'chat_id' => $chat_id,
-            'text' => $text,
-        ];
-
-        $data = $this->query("sendMessage", $params);
-        $message = Message::createFromObject($data->result);
-        return $message;
-    }
-
-    public function getFile(string $fileId) {
+    public function getFile(string $fileId)
+    {
         $params = [
             'file_id' => $fileId,
         ];
@@ -81,7 +84,8 @@ class BotApi
         return $file;
     }
 
-    public function downloadFile(File $file, string $tmpPath) {
+    public function downloadFile(File $file, string $tmpPath)
+    {
         file_put_contents($tmpPath, fopen(self::TELEGRAM_URL . '/file/bot' . $this->bot_key . '/' . $file->getFilePath(), 'r'));
     }
 }
