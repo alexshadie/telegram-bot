@@ -14,7 +14,9 @@
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-mbstring": "*",
-        "psr/log": "1.0.2",
+        "psr/log": "1.0.2"
+    },
+    "require-dev" : {
         "monolog/monolog": "^1.17",
         "silex/silex": "^2.2"
     },
