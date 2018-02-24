@@ -59,6 +59,7 @@ abstract class AbstractBot implements BotInterface
 
     /**
      * Update handler
+     *
      * @param Update $update
      * @return bool
      * @throws \ErrorException
@@ -77,6 +78,7 @@ abstract class AbstractBot implements BotInterface
 
     /**
      * Gets information about bot
+     *
      * @return User
      * @throws \ErrorException
      * @throws Exception\TelegramResponseException
@@ -88,6 +90,7 @@ abstract class AbstractBot implements BotInterface
 
     /**
      * Send message to specified chat
+     * TODO: Long messages split
      *
      * @param int|string $chatId
      * @param string $message

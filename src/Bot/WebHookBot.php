@@ -21,6 +21,7 @@ class WebHookBot extends AbstractBot
     /**
      * @return bool
      * @throws \ErrorException
+     * @throws Exception\TelegramResponseException
      */
     public function register() {
         return $this->botApi->registerWebHook($this->endpoint, $this->certificateFile);
@@ -29,6 +30,7 @@ class WebHookBot extends AbstractBot
     /**
      * @return bool
      * @throws \ErrorException
+     * @throws Exception\TelegramResponseException
      */
     public function unregister() {
         return $this->botApi->dropWebHook();

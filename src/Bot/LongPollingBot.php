@@ -17,6 +17,7 @@ class LongPollingBot extends AbstractBot
 
     /**
      * @throws \ErrorException
+     * @throws Exception\TelegramResponseException
      */
     public function run(): void
     {
@@ -39,6 +40,7 @@ class LongPollingBot extends AbstractBot
      * Fetches new updates from Telegram API
      * @return UpdateBatch
      * @throws \ErrorException
+     * @throws Exception\TelegramResponseException
      */
     public function getNewUpdates() {
         $batch = $this->botApi->getUpdates($this->lastReceivedUpdateId + 1, $this->limit, $this->timeout);

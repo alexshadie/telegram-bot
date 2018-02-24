@@ -145,6 +145,7 @@ class BotApi
      * @param string $endpoint
      * @return bool
      * @throws \ErrorException
+     * @throws TelegramResponseException
      */
     public function registerWebHook(string $endpoint, string $certFile): bool
     {
@@ -166,6 +167,7 @@ class BotApi
      * Unregisters webhook
      * @return bool
      * @throws \ErrorException
+     * @throws TelegramResponseException
      */
     public function dropWebHook(): bool
     {
@@ -187,6 +189,7 @@ class BotApi
      * @param int $timeout
      * @return UpdateBatch
      * @throws \ErrorException
+     * @throws TelegramResponseException
      */
     public function getUpdates(?int $offset = null, int $limit = 100, int $timeout = 0): UpdateBatch
     {
