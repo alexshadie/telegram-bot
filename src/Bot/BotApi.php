@@ -4,7 +4,10 @@ namespace alexshadie\TelegramBot\Bot;
 
 use alexshadie\TelegramBot\Message\File;
 use alexshadie\TelegramBot\Objects\InputFile;
+use alexshadie\TelegramBot\Objects\User;
 use alexshadie\TelegramBot\Query\Message;
+use alexshadie\TelegramBot\Query\Update;
+use alexshadie\TelegramBot\Query\UpdateBatch;
 use Psr\Log\LoggerInterface;
 
 class BotApi
@@ -52,7 +55,7 @@ class BotApi
     protected function query($method_name, array $data = [], $http_method = 'POST'): \stdClass
     {
         $url = self::TELEGRAM_URL . '/bot' . $this->bot_key . '/' . $method_name;
-        $this->logger->debug("Quering {$url}, method: {$http_method}");
+        $this->logger && $this->logger->debug("Quering {$url}, method: {$http_method}");
         $ch = curl_init($url);
 
         switch ($http_method) {
@@ -62,12 +65,12 @@ class BotApi
                         $data[$key] = $item->getPostObject();
                     }
                 }
-                $this->logger->debug("Params: " . http_build_query($data));
+                $this->logger && $this->logger->debug("Params: " . http_build_query($data));
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
                 break;
             default:
-                $this->logger->debug("Params: " . http_build_query($data));
+                $this->logger && $this->logger->debug("Params: " . http_build_query($data));
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
         }
@@ -93,12 +96,23 @@ class BotApi
     }
 
     /**
+     * @return User
+     * @throws \ErrorException
+     */
+    public function getMe(): User
+    {
+        $data = $this->query("getMe");
+        $bot = User::createFromObject($data->result);
+        return $bot;
+    }
+
+    /**
      * TODO: Check for invalid file
      * @param string $fileId
      * @return File
      * @throws \ErrorException
      */
-    public function getFile(string $fileId) : File
+    public function getFile(string $fileId): File
     {
         $params = [
             'file_id' => $fileId,
@@ -116,5 +130,63 @@ class BotApi
     public function downloadFile(File $file, string $tmpPath): void
     {
         file_put_contents($tmpPath, fopen(self::TELEGRAM_URL . '/file/bot' . $this->bot_key . '/' . $file->getFilePath(), 'r'));
+    }
+
+    /**
+     * Registers webhook
+     * @param string $endpoint
+     * @return bool
+     * @throws \ErrorException
+     */
+    public function registerWebHook(string $endpoint, string $certFile): bool
+    {
+        $certificateFile = new InputFile(realpath($certFile));
+
+        $data = $this->query(
+            "setWebhook",
+            [
+                'url' => $endpoint,
+                'certificate' => $certificateFile
+            ]
+        );
+
+        $this->logger && $this->logger->debug("Webhook set with message '" . ($data->description ?? '') . "'");
+        return $data->result;
+    }
+
+    /**
+     * Unregisters webhook
+     * @return bool
+     * @throws \ErrorException
+     */
+    public function dropWebHook(): bool
+    {
+        $data = $this->query(
+            "setWebhook",
+            [
+                'url' => '',
+            ]
+        );
+
+        $this->logger && $this->logger->debug("Webhook unset with message '" . ($data->description ?? '') . "'");
+        return $data->result;
+    }
+
+    /**
+     * TODO: check webhooks
+     * @param int|null $offset
+     * @param int $limit
+     * @param int $timeout
+     * @return UpdateBatch
+     * @throws \ErrorException
+     */
+    public function getUpdates(?int $offset = null, int $limit = 100, int $timeout = 0): UpdateBatch
+    {
+        $data = $this->query("getUpdates", ['offset' => $offset, 'limit' => $limit, 'timeout' => $timeout]);
+        $updates = Update::createFromObjectList($data->result);
+        if (!count($updates)) {
+            return new UpdateBatch([]);
+        }
+        return new UpdateBatch($updates);
     }
 }

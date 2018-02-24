@@ -8,5 +8,14 @@ list($name, $token, $endpoint) = $config;
 
 $logger = new \Monolog\Logger("telegram-bot");
 
-$webHookBot = new \alexshadie\TelegramBot\Bot\WebhookBotApi($name, $token, $endpoint, $logger);
-$webHookBot->dropWebHook();
+$webHookBotApi = new \alexshadie\TelegramBot\Bot\BotApi($name, $token, $logger);
+
+$bot = new \alexshadie\TelegramBot\Bot\WebHookBot(
+    $endpoint,
+    realpath(__DIR__ . "/../cert/cert.pem")
+);
+
+$bot->setBotApi($webHookBotApi)
+    ->setLogger($logger);
+
+$bot->unregister();

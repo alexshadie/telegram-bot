@@ -2,47 +2,35 @@
 
 namespace alexshadie\TelegramBot\Bot;
 
-use alexshadie\TelegramBot\MessageDispatcher\MessageDispatcherInterface;
-use alexshadie\TelegramBot\Query\Update;
-use Psr\Log\LoggerInterface;
-
-class WebHookBot
+class WebHookBot extends AbstractBot
 {
-    /**
-     * @var WebhookBotApi
-     */
-    private $botApi;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var MessageDispatcherInterface
-     */
-    private $messageDispatcher;
+    /** @var string  */
+    private $endpoint;
+    /** @var string */
+    private $certificateFile;
 
     public function __construct(
-        WebHookBotApi $botApi,
-        MessageDispatcherInterface $messageDispatcher,
-        LoggerInterface $logger
+        string $endpoint,
+        string $certificateFile
     )
     {
-        $this->botApi = $botApi;
-        $this->messageDispatcher = $messageDispatcher;
-        $this->logger = $logger;
+        $this->endpoint = $endpoint;
+        $this->certificateFile = $certificateFile;
     }
 
-    public function handleUpdate(Update $update): bool
-    {
-        if ($update->getMessage()) {
-            $this->messageDispatcher->dispatch($update->getMessage());
-            $this->logger->debug("Message received");
-        } else {
-            $this->logger->debug("Unsupported query");
-            echo $update;
-        }
-        return true;
+    /**
+     * @return bool
+     * @throws \ErrorException
+     */
+    public function register() {
+        return $this->botApi->registerWebHook($this->endpoint, $this->certificateFile);
+    }
+
+    /**
+     * @return bool
+     * @throws \ErrorException
+     */
+    public function unregister() {
+        return $this->botApi->dropWebHook();
     }
 }

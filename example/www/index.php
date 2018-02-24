@@ -8,14 +8,21 @@ list($name, $token, $endpoint) = $config;
 
 $logger = new \Monolog\Logger("telegram-bot");
 
-$webHookBotApi = new \alexshadie\TelegramBot\Bot\WebhookBotApi($name, $token, $endpoint, $logger);
+$webHookBotApi = new \alexshadie\TelegramBot\Bot\BotApi($name, $token, $logger);
 
 $messageDispatcher = new \alexshadie\TelegramBot\MessageDispatcher\MessageDispatcher($webHookBotApi);
 $messageDispatcher->addHandler(
     new \alexshadie\TelegramBot\MessageDispatcher\EchoMessageHandler()
 );
 
-$bot = new \alexshadie\TelegramBot\Bot\WebHookBot($webHookBotApi, $messageDispatcher, $logger);
+$bot = new \alexshadie\TelegramBot\Bot\WebHookBot(
+    $endpoint,
+    realpath(__DIR__ . "/../cert/cert.pem")
+);
+
+$bot->setBotApi($webHookBotApi)
+    ->setLogger($logger)
+    ->setMessageDispatcher($messageDispatcher);
 
 $app = new Silex\Application();
 //$app['debug'] = true;
