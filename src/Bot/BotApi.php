@@ -2,6 +2,7 @@
 
 namespace alexshadie\TelegramBot\Bot;
 
+use alexshadie\TelegramBot\Bot\Exception\TelegramResponseException;
 use alexshadie\TelegramBot\Message\File;
 use alexshadie\TelegramBot\Objects\InputFile;
 use alexshadie\TelegramBot\Objects\User;
@@ -32,6 +33,7 @@ class BotApi
      * @param string $text
      * @return Message
      * @throws \ErrorException
+     * @throws TelegramResponseException
      */
     public function message($chat_id, string $text): Message
     {
@@ -50,6 +52,7 @@ class BotApi
      * @param array $data
      * @param string $http_method
      * @return \stdClass
+     * @throws TelegramResponseException
      * @throws \ErrorException
      */
     protected function query($method_name, array $data = [], $http_method = 'POST'): \stdClass
@@ -88,8 +91,11 @@ class BotApi
         $data = json_decode($server_output);
 
         if (!isset($data->ok) || !$data->ok) {
-            var_export($data);
-            throw new \ErrorException("Telegram response error");
+            throw new TelegramResponseException(
+                $data->description ?? "",
+                $data->error_code ?? 0,
+                $data
+            );
         }
 
         return $data;
@@ -98,6 +104,7 @@ class BotApi
     /**
      * @return User
      * @throws \ErrorException
+     * @throws TelegramResponseException
      */
     public function getMe(): User
     {
@@ -111,6 +118,7 @@ class BotApi
      * @param string $fileId
      * @return File
      * @throws \ErrorException
+     * @throws TelegramResponseException
      */
     public function getFile(string $fileId): File
     {

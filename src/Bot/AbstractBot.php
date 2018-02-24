@@ -6,6 +6,7 @@ namespace alexshadie\TelegramBot\Bot;
 
 use alexshadie\TelegramBot\MessageDispatcher\MessageDispatcherInterface;
 use alexshadie\TelegramBot\Objects\User;
+use alexshadie\TelegramBot\Query\Message;
 use alexshadie\TelegramBot\Query\Update;
 use Psr\Log\LoggerInterface;
 
@@ -78,9 +79,24 @@ abstract class AbstractBot implements BotInterface
      * Gets information about bot
      * @return User
      * @throws \ErrorException
+     * @throws Exception\TelegramResponseException
      */
     public function me(): User
     {
         return $this->botApi->getMe();
+    }
+
+    /**
+     * Send message to specified chat
+     *
+     * @param int|string $chatId
+     * @param string $message
+     * @return Message
+     * @throws \ErrorException
+     * @throws Exception\TelegramResponseException
+     */
+    public function say($chatId, string $message): Message
+    {
+        return $this->botApi->message($chatId, $message);
     }
 }
