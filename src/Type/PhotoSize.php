@@ -32,7 +32,7 @@ class PhotoSize extends Object
      */
     private $file_size;
 
-    public static function createFromObjectList($data)
+    public static function createFromObjectList($data): ?array
     {
         if (is_null($data)) {
             return null;
@@ -44,7 +44,7 @@ class PhotoSize extends Object
         return $photoSizes;
     }
 
-    public static function createFromObject($data)
+    public static function createFromObject(\stdClass $data)
     {
         if (is_null($data)) {
             return null;

@@ -12,20 +12,23 @@ use alexshadie\TelegramBot\Objects\Object;
 class InlineKeyboardButton extends Object
 {
     /**
-     * Текст на кнопке
+     * Button caption
      * @var string
      */
     private $text;
+
     /**
-     * Опционально. URL, который откроется при нажатии на кнопку
+     * URL to be opened on button press
      * @var string|null
      */
     private $url;
+
     /**
-     * Опционально. Данные, которые будут отправлены в callback_query при нажатии на кнопку
+     * Callback data to be send in callback_query on button press
      * @var string|null
      */
     private $callback_data;
+
     /**
      * Опционально. Если этот параметр задан, то при нажатии на кнопку приложение предложит пользователю выбрать
      * любой чат, откроет его и вставит в поле ввода сообщения юзернейм бота и определённый запрос для встроенного

@@ -85,10 +85,10 @@ class Message extends Object
     private $pinned_message;
 
     /**
-     * @param $data
+     * @param \stdClass $data
      * @return Message|null
      */
-    public static function createFromObject($data)
+    public static function createFromObject(\stdClass $data)
     {
         if (is_null($data)) {
             return null;

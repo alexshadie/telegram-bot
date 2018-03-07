@@ -11,9 +11,8 @@ use alexshadie\TelegramBot\Query\Update;
 use alexshadie\TelegramBot\Query\UpdateBatch;
 use Psr\Log\LoggerInterface;
 
-class BotApi
+class BotApi implements BotApiInterface
 {
-    const TELEGRAM_URL = "https://api.telegram.org";
     /** @var string */
     protected $bot_name;
     /** @var string */
@@ -21,6 +20,12 @@ class BotApi
     /** @var LoggerInterface */
     protected $logger;
 
+    /**
+     * BotApi constructor.
+     * @param string $bot_name
+     * @param string $bot_key
+     * @param LoggerInterface|null $logger
+     */
     public function __construct(string $bot_name, string $bot_key, LoggerInterface $logger = null)
     {
         $this->bot_name = $bot_name;
@@ -29,6 +34,8 @@ class BotApi
     }
 
     /**
+     * Sends message to Telegram
+     *
      * @param int|string $chat_id
      * @param string $text
      * @return Message
@@ -48,14 +55,16 @@ class BotApi
     }
 
     /**
+     * Sends query to server
+     *
      * @param $method_name
      * @param array $data
      * @param string $http_method
-     * @return \stdClass
+     * @return mixed
      * @throws TelegramResponseException
      * @throws \ErrorException
      */
-    protected function query($method_name, array $data = [], $http_method = 'POST'): \stdClass
+    protected function query($method_name, array $data = [], $http_method = 'POST')
     {
         $url = self::TELEGRAM_URL . '/bot' . $this->bot_key . '/' . $method_name;
         $this->logger && $this->logger->debug("Quering {$url}, method: {$http_method}");
@@ -102,6 +111,8 @@ class BotApi
     }
 
     /**
+     * Gets Bot information
+     *
      * @return User
      * @throws \ErrorException
      * @throws TelegramResponseException
@@ -114,7 +125,9 @@ class BotApi
     }
 
     /**
+     * Gets file info
      * TODO: Check for invalid file
+     *
      * @param string $fileId
      * @return File
      * @throws \ErrorException
@@ -131,7 +144,9 @@ class BotApi
     }
 
     /**
+     * Downloads file
      * TODO: Check for invalid file
+     *
      * @param File $file
      * @param string $tmpPath
      */
@@ -142,7 +157,9 @@ class BotApi
 
     /**
      * Registers webhook
+     *
      * @param string $endpoint
+     * @param string $certFile
      * @return bool
      * @throws \ErrorException
      * @throws TelegramResponseException
@@ -159,12 +176,13 @@ class BotApi
             ]
         );
 
-        $this->logger && $this->logger->debug("Webhook set with message '" . ($data->description ?? '') . "'");
+        $this->logger && $this->logger->info("Webhook set with message '" . ($data->description ?? '') . "'");
         return $data->result;
     }
 
     /**
      * Unregisters webhook
+     *
      * @return bool
      * @throws \ErrorException
      * @throws TelegramResponseException
@@ -178,12 +196,14 @@ class BotApi
             ]
         );
 
-        $this->logger && $this->logger->debug("Webhook unset with message '" . ($data->description ?? '') . "'");
+        $this->logger && $this->logger->info("Webhook unset with message '" . ($data->description ?? '') . "'");
         return $data->result;
     }
 
     /**
+     * Gets updates
      * TODO: check webhooks
+     *
      * @param int|null $offset
      * @param int $limit
      * @param int $timeout

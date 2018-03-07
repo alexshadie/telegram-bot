@@ -16,12 +16,14 @@ class LongPollingBot extends AbstractBot
     private $stop = false;
 
     /**
+     * Runs event loop
+     *
      * @throws \ErrorException
      * @throws Exception\TelegramResponseException
+     * @throws Exception\BotException
      */
     public function run(): void
     {
-        $this->stop = false;
         while (!$this->stop) {
             $updates = $this->getNewUpdates();
 
@@ -34,15 +36,18 @@ class LongPollingBot extends AbstractBot
                 usleep(100000); // sleep for 100 msec
             }
         }
+        $this->stop = false;
     }
 
     /**
      * Fetches new updates from Telegram API
+     *
      * @return UpdateBatch
      * @throws \ErrorException
      * @throws Exception\TelegramResponseException
      */
-    public function getNewUpdates() {
+    public function getNewUpdates(): UpdateBatch
+    {
         $batch = $this->botApi->getUpdates($this->lastReceivedUpdateId + 1, $this->limit, $this->timeout);
         $this->lastReceivedUpdateId = $batch->getLastUpdateId();
         return $batch;

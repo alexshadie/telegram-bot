@@ -5,10 +5,9 @@ namespace alexshadie\TelegramBot\Query;
 use alexshadie\TelegramBot\Objects\Object;
 
 /**
- * Этот объект представляет из себя входящее обновление. Под обновлением подразумевается действие,
- * совершённое с ботом — например, получение сообщения от пользователя.
+ * This object represents an incoming update.
+ * At most one of the optional parameters can be present in any given update.
  *
- * Только один из необязательных параметров может присутствовать в каждом обновлении.
  * @package telegram
  */
 class Update extends Object
@@ -26,6 +25,21 @@ class Update extends Object
      */
     private $message;
     /**
+     * New version of a message that is known to the bot and was edited
+     * @var Message|null
+     */
+    private $edited_message;
+    /**
+     * New incoming channel post of any kind — text, photo, sticker, etc.
+     * @var Message|null
+     */
+    private $channel_post;
+    /**
+     * New version of a channel post that is known to the bot and was edited
+     * @var Message|null
+     */
+    private $edited_channel_post;
+    /**
      * New incoming inline query
      * @var InlineQuery|null
      */
@@ -40,12 +54,22 @@ class Update extends Object
      * @var CallbackQuery|null
      */
     private $callback_query;
+    /**
+     * New incoming shipping query. Only for invoices with flexible price
+     * @var ShippingQuery|null
+     */
+    private $shipping_query;
+    /**
+     * New incoming pre-checkout query. Contains full information about checkout
+     * @var PreCheckoutQuery|null
+     */
+    private $pre_checkout_query;
 
     /**
      * @param $data
      * @return Update[]|null
      */
-    public static function createFromObjectList($data)
+    public static function createFromObjectList($data) : ?array
     {
         if (is_null($data)) {
             return null;
@@ -69,51 +93,6 @@ class Update extends Object
         $update = new Update();
         $update->update_id = $data->update_id;
         $update->message = Message::createFromObject($data->message ?? null);
-        /*
-object(stdClass)#32 (2) {
-  ["update_id"]=>
-  int(655017557)
-  ["edited_message"]=>
-  object(stdClass)#33 (6) {
-    ["message_id"]=>
-    int(94)
-    ["from"]=>
-    object(stdClass)#34 (6) {
-      ["id"]=>
-      int(258500651)
-      ["is_bot"]=>
-      bool(false)
-      ["first_name"]=>
-      string(4) "Alex"
-      ["last_name"]=>
-      string(6) "Shadie"
-      ["username"]=>
-      string(10) "alexshadie"
-      ["language_code"]=>
-      string(5) "en-US"
-    }
-    ["chat"]=>
-    object(stdClass)#35 (5) {
-      ["id"]=>
-      int(258500651)
-      ["first_name"]=>
-      string(4) "Alex"
-      ["last_name"]=>
-      string(6) "Shadie"
-      ["username"]=>
-      string(10) "alexshadie"
-      ["type"]=>
-      string(7) "private"
-    }
-    ["date"]=>
-    int(1517083670)
-    ["edit_date"]=>
-    int(1517083678)
-    ["text"]=>
-    string(16) "contractor: test"
-  }
-}
-         */
 //        $update->edited_message = null;// EditedMessage
         $update->inline_query = null;//InlineQuery::createFromObject($data->inline_query);
         $update->chosen_inline_result = null;//ChosenInlineResult::createFromObject($data->chosen_inline_result);

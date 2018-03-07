@@ -46,10 +46,10 @@ class Chat extends Object
     private $all_members_are_administrators;
 
     /**
-     * @param $data
+     * @param \stdClass $data
      * @return Chat|null
      */
-    public static function createFromObject($data)
+    public static function createFromObject(\stdClass $data)
     {
         if (is_null($data)) {
             return null;
