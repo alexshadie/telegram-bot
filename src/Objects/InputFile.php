@@ -2,22 +2,43 @@
 
 namespace alexshadie\TelegramBot\Objects;
 
+
 /**
- * Class InputFile
- * This object represents the contents of a file to be uploaded. Must be posted using multipart/form-data in the usual way that files are uploaded via the browser.
- * @package telegram
+ * This object represents the contents of a file to be uploaded. Must be posted using multipart/form-data in the usual
+ * way that files are uploaded via the browser.
+ *
  */
 class InputFile extends Object
 {
-    private $localFileName;
-
-    public function __construct($localFileName)
+    /**
+      * Creates InputFile object from data.
+      * @param \stdClass $data
+      * @return InputFile
+      */
+    public static function createFromObject(?\stdClass $data): ?InputFile
     {
-        $this->localFileName = $localFileName;
+        if (is_null($data)) {
+            return null;
+        }
+        $object = new InputFile();
+        return $object;
     }
 
-    public function getPostObject()
+    /**
+      * Creates array of InputFile objects from data.
+      * @param array $data
+      * @return InputFile[]
+      */
+    public static function createFromObjectList(?array $data): ?array
     {
-        return new \CURLFile($this->localFileName);
+        if (is_null($data)) {
+            return null;
+        };
+        $objects = [];
+        foreach ($data as $row) {
+            $objects[] = static::createFromObject($row);
+        }
+        return $objects;
     }
+
 }

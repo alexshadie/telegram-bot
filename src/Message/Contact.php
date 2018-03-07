@@ -5,29 +5,112 @@ namespace alexshadie\TelegramBot\Message;
 use alexshadie\TelegramBot\Objects\Object;
 
 /**
- * Этот объект представляет контакт с номером телефона.
- * @package telegram
+ * This object represents a phone contact.
+ *
  */
 class Contact extends Object
 {
     /**
-     * Номер телефона
+     * Contact's phone number
+     *
      * @var string
      */
     private $phone_number;
+
     /**
-     * Имя
+     * Contact's first name
+     *
      * @var string
      */
     private $first_name;
+
     /**
-     * Опционально. Фамилия
+     * Contact's last name
+     *
      * @var string|null
      */
     private $last_name;
+
     /**
-     * Опционально. Идентификатор пользователя в Telegram
+     * Contact's user identifier in Telegram
+     *
      * @var int|null
      */
     private $user_id;
+
+    /**
+     * Contact's phone number
+     *
+     * @return string
+     */
+    public function getPhoneNumber(): string
+    {
+        return $this->phone_number;
+    }
+
+    /**
+     * Contact's first name
+     *
+     * @return string
+     */
+    public function getFirstName(): string
+    {
+        return $this->first_name;
+    }
+
+    /**
+     * Contact's last name
+     *
+     * @return string|null
+     */
+    public function getLastName(): ?string
+    {
+        return $this->last_name;
+    }
+
+    /**
+     * Contact's user identifier in Telegram
+     *
+     * @return int|null
+     */
+    public function getUserId(): ?int
+    {
+        return $this->user_id;
+    }
+
+    /**
+      * Creates Contact object from data.
+      * @param \stdClass $data
+      * @return Contact
+      */
+    public static function createFromObject(?\stdClass $data): ?Contact
+    {
+        if (is_null($data)) {
+            return null;
+        }
+        $object = new Contact();
+        $object->phone_number = $data->phone_number;
+        $object->first_name = $data->first_name;
+        $object->last_name = $data->last_name ?? null;
+        $object->user_id = $data->user_id ?? null;
+        return $object;
+    }
+
+    /**
+      * Creates array of Contact objects from data.
+      * @param array $data
+      * @return Contact[]
+      */
+    public static function createFromObjectList(?array $data): ?array
+    {
+        if (is_null($data)) {
+            return null;
+        };
+        $objects = [];
+        foreach ($data as $row) {
+            $objects[] = static::createFromObject($row);
+        }
+        return $objects;
+    }
+
 }

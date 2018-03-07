@@ -5,60 +5,42 @@ namespace alexshadie\TelegramBot\Type;
 use alexshadie\TelegramBot\Objects\Object;
 
 /**
- * Class PhotoSize
- * Этот объект представляет изображение определённого размера или превью файла / стикера.
- * @package telegram
+ * This object represents one size of a photo or a file / sticker thumbnail.
+ *
  */
 class PhotoSize extends Object
 {
     /**
-     * Уникальный идентификатор файла
+     * Unique identifier for this file
+     *
      * @var string
      */
     private $file_id;
+
     /**
      * Photo width
+     *
      * @var int
      */
     private $width;
+
     /**
      * Photo height
+     *
      * @var int
      */
     private $height;
+
     /**
-     * Опционально. Размер файла
+     * File size
+     *
      * @var int|null
      */
     private $file_size;
 
-    public static function createFromObjectList($data): ?array
-    {
-        if (is_null($data)) {
-            return null;
-        }
-        $photoSizes = [];
-        foreach ($data as $row) {
-            $photoSizes[] = self::createFromObject($row);
-        }
-        return $photoSizes;
-    }
-
-    public static function createFromObject(\stdClass $data)
-    {
-        if (is_null($data)) {
-            return null;
-        }
-        $photoSize = new PhotoSize();
-        $photoSize->file_id = $data->file_id;
-        $photoSize->width = $data->width;
-        $photoSize->height = $data->height;
-        $photoSize->file_size = $data->file_size ?? null;
-
-        return $photoSize;
-    }
-
     /**
+     * Unique identifier for this file
+     *
      * @return string
      */
     public function getFileId(): string
@@ -67,6 +49,8 @@ class PhotoSize extends Object
     }
 
     /**
+     * Photo width
+     *
      * @return int
      */
     public function getWidth(): int
@@ -75,6 +59,8 @@ class PhotoSize extends Object
     }
 
     /**
+     * Photo height
+     *
      * @return int
      */
     public function getHeight(): int
@@ -83,10 +69,48 @@ class PhotoSize extends Object
     }
 
     /**
+     * File size
+     *
      * @return int|null
      */
     public function getFileSize(): ?int
     {
         return $this->file_size;
     }
+
+    /**
+      * Creates PhotoSize object from data.
+      * @param \stdClass $data
+      * @return PhotoSize
+      */
+    public static function createFromObject(?\stdClass $data): ?PhotoSize
+    {
+        if (is_null($data)) {
+            return null;
+        }
+        $object = new PhotoSize();
+        $object->file_id = $data->file_id;
+        $object->width = $data->width;
+        $object->height = $data->height;
+        $object->file_size = $data->file_size ?? null;
+        return $object;
+    }
+
+    /**
+      * Creates array of PhotoSize objects from data.
+      * @param array $data
+      * @return PhotoSize[]
+      */
+    public static function createFromObjectList(?array $data): ?array
+    {
+        if (is_null($data)) {
+            return null;
+        };
+        $objects = [];
+        foreach ($data as $row) {
+            $objects[] = static::createFromObject($row);
+        }
+        return $objects;
+    }
+
 }

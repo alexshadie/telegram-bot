@@ -16,6 +16,8 @@ class ApiDocDefinitionsParser
     private $blocks = [];
     /** @var string[] */
     private $files = [];
+    /** @var string[] */
+    private $fullFiles = [];
 
     public function __construct()
     {
@@ -75,6 +77,7 @@ class ApiDocDefinitionsParser
         $root = realpath(__DIR__ . "/../");
         foreach ($this->getDirContents($root) as $filename) {
             $this->files[str_replace(".php", "", basename($filename))] = str_replace(realpath(__DIR__ . "/../") . "/", "", $filename);
+            $this->fullFiles[str_replace(".php", "", basename($filename))] = $filename;
         }
     }
 
@@ -83,10 +86,11 @@ class ApiDocDefinitionsParser
         foreach ($this->blocks as $block) {
             if ($block->getType() == 'object') {
                 echo $block->getName() . " - " . ($this->files[$block->getName()] ?? "no file") . "\n\n";
-                $fileContents = $this->getFile($block, ($this->files[$block->getName()] ?? null));
-                echo $fileContents . "\n\n";
+                [$fileContents, $testFileContents] = $this->getFile($block, ($this->files[$block->getName()] ?? null));
+//                echo $fileContents . "\n\n";
+                var_dump($this->fullFiles[$block->getName()] ?? realpath(__DIR__ . "/../Misc/") . "/{$block->getName()}.php");
                 file_put_contents(
-                    $this->files[$block->getName()] ?? realpath(__DIR__ . "/../Misc/") . "{$block->getName()}.php",
+                    $this->fullFiles[$block->getName()] ?? realpath(__DIR__ . "/../Misc/") . "/{$block->getName()}.php",
                     $fileContents
                 );
             }
@@ -117,6 +121,9 @@ class ApiDocDefinitionsParser
     {
         if ($typename == "Integer" || $typename == "int") return "int";
         if ($typename == "String" || $typename == "string") return "string";
+        if ($typename == "Array of String") return "string[]";
+        if ($typename == "Boolean" || $typename == "True") return 'bool';
+        if ($typename == "Float" || $typename == "Float number") return "float";
         return null;
     }
 
@@ -145,6 +152,9 @@ class ApiDocDefinitionsParser
     private function getRetType($typename)
     {
         if ($this->getCoreType($typename)) {
+            if (strpos($this->getCoreType($typename), "[]") !== false) {
+                return "array";
+            }
             return $this->getCoreType($typename);
         }
         if (strpos($typename, "Array of ") !== false) {
@@ -169,6 +179,8 @@ class ApiDocDefinitionsParser
             $file = "Misc/" . $block->getName();
         }
 
+        $classInfo = ['name' => $block->getName(), 'fields' => []];
+
         $header = [];
         $use = [];
         $class = [];
@@ -185,12 +197,15 @@ class ApiDocDefinitionsParser
         $testMethods = [];
 
 
-        $header = ["<?php", "", "namespace alexshadie\\TelegramBot\\" . str_replace(["/", ".php"], ["\\", ""], $file) . ";", ""];
-        $use["Object"] = "use " . $this->getNamespace("Object") . ";";
+        $thisns = "alexshadie\\TelegramBot\\" . str_replace(["/", "\\".$block->getName() . ".php"], ["\\", ""], $file);
+
+        $header = ["<?php", "", "namespace {$thisns};", ""];
+        if ($thisns !== "alexshadie\TelegramBot\Objects") {
+            $use["Object"] = "use " . $this->getNamespace("Object") . ";";
+        }
         $ctorDoc[] = "    /**";
         $ctorDoc[] = "     * {$block->getName()} constructor.";
         $ctorDoc[] = "     *";
-
 
         $class[] = "/**";
         $desc = explode("\n", $block->getDescription());
@@ -234,8 +249,15 @@ class ApiDocDefinitionsParser
                 }
                 $props[] = "     * @var " . $this->getDocType($property['type']) . ($property['optional'] ? "|null" : "");
                 $getters[] = "     * @return " . $this->getDocType($property['type']) . ($property['optional'] ? "|null" : "");
-                if (!$this->getCoreType($property['type'])) {
-                    $use[$property['type']] = "use " . $this->getNamespace($property['type']) . ";";
+                if (!$this->getCoreType($property['type']) && $this->getNsType($property['type']) != $block->getName()) {
+                    $ns = $this->getNamespace($this->getNsType($property['type']));
+
+                    // Same namespace - do not include
+                    if (strpos($ns, $thisns) === 0 && strpos(str_replace($thisns . "\\", "", $ns), "\\") === false) {
+
+                    } else {
+                        $use[$this->getNsType($property['type'])] = "use " . $this->getNamespace($this->getNsType($property['type'])) . ";";
+                    }
                 }
                 $props[] = "     */";
                 $getters[] = "     */";
@@ -253,12 +275,12 @@ class ApiDocDefinitionsParser
 
                 $ctorDoc[] = "     * @param \$" . $this->underscoreToCamelCase($property['name'], true) . " " . $this->getDocType($property['type']) . ($property['optional'] ? "|null" : "");
 
-                $ctorBody[] = "        \$this->" . $property['name'] . " = \$data->" . $property['name'] . ";";
+                $ctorBody[] = "        \$this->" . $property['name'] . " = \${$this->underscoreToCamelCase($property['name'], true)};";
 
                 if ($this->getCoreType($property['type'])) {
                     $create[] = "        \$object->" . $property['name'] . " = \$data->" . $property['name'] . ($property['optional'] ? " ?? null" : "") . ";";
                 } else {
-                    $create[] = "        \$object->" . $property['name'] . " = new " . $this->getNsType($property['type']) . "(\$data->" . $property['name'] . ($property['optional'] ? " ?? null" : "") . ");";
+                    $create[] = "        \$object->" . $property['name'] . " = " . $this->getNsType($property['type']) . "::createFromObject(\$data->" . $property['name'] . ($property['optional'] ? " ?? null" : "") . ");";
                 }
             }
         }
@@ -272,7 +294,7 @@ class ApiDocDefinitionsParser
         $create[] = "      * @param array \$data";
         $create[] = "      * @return " . $block->getName() . "[]";
         $create[] = "      */";
-        $create[] = "    public static function createFromObject(?array \$data): ?array";
+        $create[] = "    public static function createFromObjectList(?array \$data): ?array";
         $create[] = "    {";
         $create[] = "        if (is_null(\$data)) {";
         $create[] = "            return null;";
@@ -299,7 +321,7 @@ class ApiDocDefinitionsParser
             $use,
             $class,
             $props,
-            $ctor,
+//            $ctor,
             $getters,
             $methods,
             $create
@@ -317,7 +339,10 @@ class ApiDocDefinitionsParser
         $testContent[] = "}";
         $testContent[] = "";
 
-        return join("\n", $content);
+        return [
+            join("\n", $content),
+            join("\n", $testContent)
+        ];
     }
 
 }

@@ -2,45 +2,58 @@
 
 namespace alexshadie\TelegramBot\Objects;
 
+
 /**
  * This object represents a Telegram user or bot.
- * @package TelegramBot
+ *
  */
 class User extends Object
 {
     /**
      * Unique identifier for this user or bot
+     *
      * @var int
      */
     private $id;
+
     /**
      * True, if this user is a bot
+     *
      * @var bool
      */
     private $is_bot;
+
     /**
      * User‘s or bot’s first name
+     *
      * @var string
      */
     private $first_name;
+
     /**
      * User‘s or bot’s last name
+     *
      * @var string|null
      */
     private $last_name;
+
     /**
      * User‘s or bot’s username
+     *
      * @var string|null
      */
     private $username;
+
     /**
-     * IETF language tag of the user's language.
-     * @see https://en.wikipedia.org/wiki/IETF_language_tag
+     * IETF language tag of the user's language
+     *
      * @var string|null
      */
     private $language_code;
 
     /**
+     * Unique identifier for this user or bot
+     *
      * @return int
      */
     public function getId(): int
@@ -49,6 +62,18 @@ class User extends Object
     }
 
     /**
+     * True, if this user is a bot
+     *
+     * @return bool
+     */
+    public function getIsBot(): bool
+    {
+        return $this->is_bot;
+    }
+
+    /**
+     * User‘s or bot’s first name
+     *
      * @return string
      */
     public function getFirstName(): string
@@ -57,7 +82,9 @@ class User extends Object
     }
 
     /**
-     * @return null|string
+     * User‘s or bot’s last name
+     *
+     * @return string|null
      */
     public function getLastName(): ?string
     {
@@ -65,7 +92,9 @@ class User extends Object
     }
 
     /**
-     * @return null|string
+     * User‘s or bot’s username
+     *
+     * @return string|null
      */
     public function getUsername(): ?string
     {
@@ -73,14 +102,8 @@ class User extends Object
     }
 
     /**
-     * @return bool
-     */
-    public function isBot(): bool
-    {
-        return $this->is_bot;
-    }
-
-    /**
+     * IETF language tag of the user's language
+     *
      * @return string|null
      */
     public function getLanguageCode(): ?string
@@ -89,10 +112,11 @@ class User extends Object
     }
 
     /**
-     * @param \stdClass $data
-     * @return User
-     */
-    public static function createFromObject(\stdClass $data)
+      * Creates User object from data.
+      * @param \stdClass $data
+      * @return User
+      */
+    public static function createFromObject(?\stdClass $data): ?User
     {
         if (is_null($data)) {
             return null;
@@ -106,4 +130,22 @@ class User extends Object
         $object->language_code = $data->language_code ?? null;
         return $object;
     }
+
+    /**
+      * Creates array of User objects from data.
+      * @param array $data
+      * @return User[]
+      */
+    public static function createFromObjectList(?array $data): ?array
+    {
+        if (is_null($data)) {
+            return null;
+        };
+        $objects = [];
+        foreach ($data as $row) {
+            $objects[] = static::createFromObject($row);
+        }
+        return $objects;
+    }
+
 }
