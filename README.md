@@ -11,8 +11,8 @@ openssl req -newkey rsa:2048 -sha256 -nodes -keyout cert.key -x509 -days 365 -ou
 
 # Roadmap
 
-  - Translate PHPDoc (Telegram official API docs)
-  - Implement objects
+  - <s>Translate PHPDoc (Telegram official API docs)</s>
+  - <s>Implement objects</s>
   - State machine
   - Tests
   - Implement keyboards
