@@ -48,6 +48,24 @@ class Animation extends Object
     private $file_size;
 
     /**
+     * Animation constructor.
+     *
+     * @param string $fileId
+     * @param PhotoSize|null $thumb
+     * @param string|null $fileName
+     * @param string|null $mimeType
+     * @param int|null $fileSize
+     */
+    public function __construct(string $fileId, ?PhotoSize $thumb = null, ?string $fileName = null, ?string $mimeType = null, ?int $fileSize = null)
+    {
+        $this->file_id = $fileId;
+        $this->thumb = $thumb;
+        $this->file_name = $fileName;
+        $this->mime_type = $mimeType;
+        $this->file_size = $fileSize;
+    }
+
+    /**
      * Unique file identifier
      *
      * @return string
@@ -107,12 +125,15 @@ class Animation extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new Animation();
-        $object->file_id = $data->file_id;
+        $object = new Animation(
+            $data->file_id
+        );
+
         $object->thumb = PhotoSize::createFromObject($data->thumb ?? null);
         $object->file_name = $data->file_name ?? null;
         $object->mime_type = $data->mime_type ?? null;
         $object->file_size = $data->file_size ?? null;
+
         return $object;
     }
 

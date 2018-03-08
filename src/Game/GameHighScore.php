@@ -39,6 +39,20 @@ class GameHighScore extends Object
     private $score;
 
     /**
+     * GameHighScore constructor.
+     *
+     * @param int $position
+     * @param User $user
+     * @param int $score
+     */
+    public function __construct(int $position, User $user, int $score)
+    {
+        $this->position = $position;
+        $this->user = $user;
+        $this->score = $score;
+    }
+
+    /**
      * Position in high score table for the game
      *
      * @return int
@@ -78,10 +92,13 @@ class GameHighScore extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new GameHighScore();
-        $object->position = $data->position;
-        $object->user = User::createFromObject($data->user);
-        $object->score = $data->score;
+        $object = new GameHighScore(
+            $data->position,
+            User::createFromObject($data->user),
+            $data->score
+        );
+
+
         return $object;
     }
 

@@ -39,6 +39,22 @@ class Contact extends Object
     private $user_id;
 
     /**
+     * Contact constructor.
+     *
+     * @param string $phoneNumber
+     * @param string $firstName
+     * @param string|null $lastName
+     * @param int|null $userId
+     */
+    public function __construct(string $phoneNumber, string $firstName, ?string $lastName = null, ?int $userId = null)
+    {
+        $this->phone_number = $phoneNumber;
+        $this->first_name = $firstName;
+        $this->last_name = $lastName;
+        $this->user_id = $userId;
+    }
+
+    /**
      * Contact's phone number
      *
      * @return string
@@ -88,11 +104,14 @@ class Contact extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new Contact();
-        $object->phone_number = $data->phone_number;
-        $object->first_name = $data->first_name;
+        $object = new Contact(
+            $data->phone_number,
+            $data->first_name
+        );
+
         $object->last_name = $data->last_name ?? null;
         $object->user_id = $data->user_id ?? null;
+
         return $object;
     }
 

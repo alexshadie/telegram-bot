@@ -49,6 +49,18 @@ class ForceReply extends Object
     private $selective;
 
     /**
+     * ForceReply constructor.
+     *
+     * @param bool $forceReply
+     * @param bool|null $selective
+     */
+    public function __construct(bool $forceReply, ?bool $selective = null)
+    {
+        $this->force_reply = $forceReply;
+        $this->selective = $selective;
+    }
+
+    /**
      * Shows reply interface to the user, as if they manually selected the bot‘s message and tapped ’Reply'
      *
      * @return bool
@@ -80,9 +92,12 @@ class ForceReply extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new ForceReply();
-        $object->force_reply = $data->force_reply;
+        $object = new ForceReply(
+            $data->force_reply
+        );
+
         $object->selective = $data->selective ?? null;
+
         return $object;
     }
 

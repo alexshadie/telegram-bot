@@ -11,6 +11,14 @@ use alexshadie\TelegramBot\Objects\Object;
 class CallbackGame extends Object
 {
     /**
+     * CallbackGame constructor.
+     *
+     */
+    public function __construct()
+    {
+    }
+
+    /**
       * Creates CallbackGame object from data.
       * @param \stdClass $data
       * @return CallbackGame
@@ -20,7 +28,11 @@ class CallbackGame extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new CallbackGame();
+        $object = new CallbackGame(
+            
+        );
+
+
         return $object;
     }
 

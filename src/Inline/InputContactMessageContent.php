@@ -34,6 +34,20 @@ class InputContactMessageContent extends Object
     private $last_name;
 
     /**
+     * InputContactMessageContent constructor.
+     *
+     * @param string $phoneNumber
+     * @param string $firstName
+     * @param string|null $lastName
+     */
+    public function __construct(string $phoneNumber, string $firstName, ?string $lastName = null)
+    {
+        $this->phone_number = $phoneNumber;
+        $this->first_name = $firstName;
+        $this->last_name = $lastName;
+    }
+
+    /**
      * Contact's phone number
      *
      * @return string
@@ -73,10 +87,13 @@ class InputContactMessageContent extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InputContactMessageContent();
-        $object->phone_number = $data->phone_number;
-        $object->first_name = $data->first_name;
+        $object = new InputContactMessageContent(
+            $data->phone_number,
+            $data->first_name
+        );
+
         $object->last_name = $data->last_name ?? null;
+
         return $object;
     }
 

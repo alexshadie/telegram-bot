@@ -22,6 +22,14 @@ use alexshadie\TelegramBot\Objects\Object;
 class InputMessageContent extends Object
 {
     /**
+     * InputMessageContent constructor.
+     *
+     */
+    public function __construct()
+    {
+    }
+
+    /**
       * Creates InputMessageContent object from data.
       * @param \stdClass $data
       * @return InputMessageContent
@@ -31,7 +39,11 @@ class InputMessageContent extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InputMessageContent();
+        $object = new InputMessageContent(
+            
+        );
+
+
         return $object;
     }
 

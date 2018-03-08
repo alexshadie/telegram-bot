@@ -53,6 +53,26 @@ class Audio extends Object
     private $file_size;
 
     /**
+     * Audio constructor.
+     *
+     * @param string $fileId
+     * @param int $duration
+     * @param string|null $performer
+     * @param string|null $title
+     * @param string|null $mimeType
+     * @param int|null $fileSize
+     */
+    public function __construct(string $fileId, int $duration, ?string $performer = null, ?string $title = null, ?string $mimeType = null, ?int $fileSize = null)
+    {
+        $this->file_id = $fileId;
+        $this->duration = $duration;
+        $this->performer = $performer;
+        $this->title = $title;
+        $this->mime_type = $mimeType;
+        $this->file_size = $fileSize;
+    }
+
+    /**
      * Unique identifier for this file
      *
      * @return string
@@ -122,13 +142,16 @@ class Audio extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new Audio();
-        $object->file_id = $data->file_id;
-        $object->duration = $data->duration;
+        $object = new Audio(
+            $data->file_id,
+            $data->duration
+        );
+
         $object->performer = $data->performer ?? null;
         $object->title = $data->title ?? null;
         $object->mime_type = $data->mime_type ?? null;
         $object->file_size = $data->file_size ?? null;
+
         return $object;
     }
 

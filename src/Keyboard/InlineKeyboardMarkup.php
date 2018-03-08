@@ -21,6 +21,16 @@ class InlineKeyboardMarkup extends Object
     private $inline_keyboard;
 
     /**
+     * InlineKeyboardMarkup constructor.
+     *
+     * @param InlineKeyboardButton[] $inlineKeyboard
+     */
+    public function __construct(array $inlineKeyboard)
+    {
+        $this->inline_keyboard = $inlineKeyboard;
+    }
+
+    /**
      * Array of button rows, each represented by an Array of InlineKeyboardButton objects
      *
      * @return InlineKeyboardButton[]
@@ -40,8 +50,11 @@ class InlineKeyboardMarkup extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineKeyboardMarkup();
-        $object->inline_keyboard = InlineKeyboardButton::createFromObject($data->inline_keyboard);
+        $object = new InlineKeyboardMarkup(
+            InlineKeyboardButton::createFromObjectList($data->inline_keyboard)
+        );
+
+
         return $object;
     }
 

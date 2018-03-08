@@ -50,6 +50,24 @@ class InlineQueryResultCachedSticker extends Object
     private $input_message_content;
 
     /**
+     * InlineQueryResultCachedSticker constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $stickerFileId
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     */
+    public function __construct(string $type, string $id, string $stickerFileId, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->sticker_file_id = $stickerFileId;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+    }
+
+    /**
      * Type of the result, must be sticker
      *
      * @return string
@@ -109,12 +127,15 @@ class InlineQueryResultCachedSticker extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultCachedSticker();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->sticker_file_id = $data->sticker_file_id;
+        $object = new InlineQueryResultCachedSticker(
+            $data->type,
+            $data->id,
+            $data->sticker_file_id
+        );
+
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
+
         return $object;
     }
 

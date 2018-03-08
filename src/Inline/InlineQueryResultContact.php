@@ -85,6 +85,34 @@ class InlineQueryResultContact extends Object
     private $thumb_height;
 
     /**
+     * InlineQueryResultContact constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $phoneNumber
+     * @param string $firstName
+     * @param string|null $lastName
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     * @param string|null $thumbUrl
+     * @param int|null $thumbWidth
+     * @param int|null $thumbHeight
+     */
+    public function __construct(string $type, string $id, string $phoneNumber, string $firstName, ?string $lastName = null, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null, ?string $thumbUrl = null, ?int $thumbWidth = null, ?int $thumbHeight = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->phone_number = $phoneNumber;
+        $this->first_name = $firstName;
+        $this->last_name = $lastName;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+        $this->thumb_url = $thumbUrl;
+        $this->thumb_width = $thumbWidth;
+        $this->thumb_height = $thumbHeight;
+    }
+
+    /**
      * Type of the result, must be contact
      *
      * @return string
@@ -194,17 +222,20 @@ class InlineQueryResultContact extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultContact();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->phone_number = $data->phone_number;
-        $object->first_name = $data->first_name;
+        $object = new InlineQueryResultContact(
+            $data->type,
+            $data->id,
+            $data->phone_number,
+            $data->first_name
+        );
+
         $object->last_name = $data->last_name ?? null;
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
         $object->thumb_url = $data->thumb_url ?? null;
         $object->thumb_width = $data->thumb_width ?? null;
         $object->thumb_height = $data->thumb_height ?? null;
+
         return $object;
     }
 

@@ -58,6 +58,26 @@ class Game extends Object
     private $animation;
 
     /**
+     * Game constructor.
+     *
+     * @param string $title
+     * @param string $description
+     * @param PhotoSize[] $photo
+     * @param string|null $text
+     * @param MessageEntity[]|null $textEntities
+     * @param Animation|null $animation
+     */
+    public function __construct(string $title, string $description, array $photo, ?string $text = null, ?array $textEntities = null, ?Animation $animation = null)
+    {
+        $this->title = $title;
+        $this->description = $description;
+        $this->photo = $photo;
+        $this->text = $text;
+        $this->text_entities = $textEntities;
+        $this->animation = $animation;
+    }
+
+    /**
      * Title of the game
      *
      * @return string
@@ -129,13 +149,16 @@ class Game extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new Game();
-        $object->title = $data->title;
-        $object->description = $data->description;
-        $object->photo = PhotoSize::createFromObject($data->photo);
+        $object = new Game(
+            $data->title,
+            $data->description,
+            PhotoSize::createFromObjectList($data->photo)
+        );
+
         $object->text = $data->text ?? null;
         $object->text_entities = MessageEntity::createFromObject($data->text_entities ?? null);
         $object->animation = Animation::createFromObject($data->animation ?? null);
+
         return $object;
     }
 

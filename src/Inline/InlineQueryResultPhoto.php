@@ -98,6 +98,38 @@ class InlineQueryResultPhoto extends Object
     private $input_message_content;
 
     /**
+     * InlineQueryResultPhoto constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $photoUrl
+     * @param string $thumbUrl
+     * @param int|null $photoWidth
+     * @param int|null $photoHeight
+     * @param string|null $title
+     * @param string|null $description
+     * @param string|null $caption
+     * @param string|null $parseMode
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     */
+    public function __construct(string $type, string $id, string $photoUrl, string $thumbUrl, ?int $photoWidth = null, ?int $photoHeight = null, ?string $title = null, ?string $description = null, ?string $caption = null, ?string $parseMode = null, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->photo_url = $photoUrl;
+        $this->thumb_url = $thumbUrl;
+        $this->photo_width = $photoWidth;
+        $this->photo_height = $photoHeight;
+        $this->title = $title;
+        $this->description = $description;
+        $this->caption = $caption;
+        $this->parse_mode = $parseMode;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+    }
+
+    /**
      * Type of the result, must be photo
      *
      * @return string
@@ -228,11 +260,13 @@ class InlineQueryResultPhoto extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultPhoto();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->photo_url = $data->photo_url;
-        $object->thumb_url = $data->thumb_url;
+        $object = new InlineQueryResultPhoto(
+            $data->type,
+            $data->id,
+            $data->photo_url,
+            $data->thumb_url
+        );
+
         $object->photo_width = $data->photo_width ?? null;
         $object->photo_height = $data->photo_height ?? null;
         $object->title = $data->title ?? null;
@@ -241,6 +275,7 @@ class InlineQueryResultPhoto extends Object
         $object->parse_mode = $data->parse_mode ?? null;
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
+
         return $object;
     }
 

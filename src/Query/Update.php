@@ -91,6 +91,34 @@ class Update extends Object
     private $pre_checkout_query;
 
     /**
+     * Update constructor.
+     *
+     * @param int $updateId
+     * @param Message|null $message
+     * @param Message|null $editedMessage
+     * @param Message|null $channelPost
+     * @param Message|null $editedChannelPost
+     * @param InlineQuery|null $inlineQuery
+     * @param ChosenInlineResult|null $chosenInlineResult
+     * @param CallbackQuery|null $callbackQuery
+     * @param ShippingQuery|null $shippingQuery
+     * @param PreCheckoutQuery|null $preCheckoutQuery
+     */
+    public function __construct(int $updateId, ?Message $message = null, ?Message $editedMessage = null, ?Message $channelPost = null, ?Message $editedChannelPost = null, ?InlineQuery $inlineQuery = null, ?ChosenInlineResult $chosenInlineResult = null, ?CallbackQuery $callbackQuery = null, ?ShippingQuery $shippingQuery = null, ?PreCheckoutQuery $preCheckoutQuery = null)
+    {
+        $this->update_id = $updateId;
+        $this->message = $message;
+        $this->edited_message = $editedMessage;
+        $this->channel_post = $channelPost;
+        $this->edited_channel_post = $editedChannelPost;
+        $this->inline_query = $inlineQuery;
+        $this->chosen_inline_result = $chosenInlineResult;
+        $this->callback_query = $callbackQuery;
+        $this->shipping_query = $shippingQuery;
+        $this->pre_checkout_query = $preCheckoutQuery;
+    }
+
+    /**
      * The update‘s unique identifier. Update identifiers start from a certain positive number and increase sequentially.
      * This ID becomes especially handy if you’re using Webhooks, since it allows you to ignore repeated updates or to
      * restore the correct update sequence, should they get out of order. If there are no new updates for at least a week,
@@ -204,8 +232,10 @@ class Update extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new Update();
-        $object->update_id = $data->update_id;
+        $object = new Update(
+            $data->update_id
+        );
+
         $object->message = Message::createFromObject($data->message ?? null);
         $object->edited_message = Message::createFromObject($data->edited_message ?? null);
         $object->channel_post = Message::createFromObject($data->channel_post ?? null);
@@ -215,6 +245,7 @@ class Update extends Object
         $object->callback_query = CallbackQuery::createFromObject($data->callback_query ?? null);
         $object->shipping_query = ShippingQuery::createFromObject($data->shipping_query ?? null);
         $object->pre_checkout_query = PreCheckoutQuery::createFromObject($data->pre_checkout_query ?? null);
+
         return $object;
     }
 

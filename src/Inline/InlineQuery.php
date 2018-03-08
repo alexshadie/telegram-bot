@@ -49,6 +49,24 @@ class InlineQuery extends Object
     private $offset;
 
     /**
+     * InlineQuery constructor.
+     *
+     * @param string $id
+     * @param User $from
+     * @param Location|null $location
+     * @param string $query
+     * @param string $offset
+     */
+    public function __construct(string $id, User $from, string $query, string $offset, ?Location $location = null)
+    {
+        $this->id = $id;
+        $this->from = $from;
+        $this->location = $location;
+        $this->query = $query;
+        $this->offset = $offset;
+    }
+
+    /**
      * Unique identifier for this query
      *
      * @return string
@@ -108,12 +126,15 @@ class InlineQuery extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQuery();
-        $object->id = $data->id;
-        $object->from = User::createFromObject($data->from);
+        $object = new InlineQuery(
+            $data->id,
+            User::createFromObject($data->from),
+            $data->query,
+            $data->offset
+        );
+
         $object->location = Location::createFromObject($data->location ?? null);
-        $object->query = $data->query;
-        $object->offset = $data->offset;
+
         return $object;
     }
 

@@ -61,6 +61,28 @@ class Video extends Object
     private $file_size;
 
     /**
+     * Video constructor.
+     *
+     * @param string $fileId
+     * @param int $width
+     * @param int $height
+     * @param int $duration
+     * @param PhotoSize|null $thumb
+     * @param string|null $mimeType
+     * @param int|null $fileSize
+     */
+    public function __construct(string $fileId, int $width, int $height, int $duration, ?PhotoSize $thumb = null, ?string $mimeType = null, ?int $fileSize = null)
+    {
+        $this->file_id = $fileId;
+        $this->width = $width;
+        $this->height = $height;
+        $this->duration = $duration;
+        $this->thumb = $thumb;
+        $this->mime_type = $mimeType;
+        $this->file_size = $fileSize;
+    }
+
+    /**
      * Unique identifier for this file
      *
      * @return string
@@ -140,14 +162,17 @@ class Video extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new Video();
-        $object->file_id = $data->file_id;
-        $object->width = $data->width;
-        $object->height = $data->height;
-        $object->duration = $data->duration;
+        $object = new Video(
+            $data->file_id,
+            $data->width,
+            $data->height,
+            $data->duration
+        );
+
         $object->thumb = PhotoSize::createFromObject($data->thumb ?? null);
         $object->mime_type = $data->mime_type ?? null;
         $object->file_size = $data->file_size ?? null;
+
         return $object;
     }
 

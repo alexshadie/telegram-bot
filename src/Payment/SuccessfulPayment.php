@@ -62,6 +62,28 @@ class SuccessfulPayment extends Object
     private $provider_payment_charge_id;
 
     /**
+     * SuccessfulPayment constructor.
+     *
+     * @param string $currency
+     * @param int $totalAmount
+     * @param string $invoicePayload
+     * @param string|null $shippingOptionId
+     * @param OrderInfo|null $orderInfo
+     * @param string $telegramPaymentChargeId
+     * @param string $providerPaymentChargeId
+     */
+    public function __construct(string $currency, int $totalAmount, string $invoicePayload, string $telegramPaymentChargeId, string $providerPaymentChargeId, ?string $shippingOptionId = null, ?OrderInfo $orderInfo = null)
+    {
+        $this->currency = $currency;
+        $this->total_amount = $totalAmount;
+        $this->invoice_payload = $invoicePayload;
+        $this->shipping_option_id = $shippingOptionId;
+        $this->order_info = $orderInfo;
+        $this->telegram_payment_charge_id = $telegramPaymentChargeId;
+        $this->provider_payment_charge_id = $providerPaymentChargeId;
+    }
+
+    /**
      * Three-letter ISO 4217 currency code
      *
      * @return string
@@ -143,14 +165,17 @@ class SuccessfulPayment extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new SuccessfulPayment();
-        $object->currency = $data->currency;
-        $object->total_amount = $data->total_amount;
-        $object->invoice_payload = $data->invoice_payload;
+        $object = new SuccessfulPayment(
+            $data->currency,
+            $data->total_amount,
+            $data->invoice_payload,
+            $data->telegram_payment_charge_id,
+            $data->provider_payment_charge_id
+        );
+
         $object->shipping_option_id = $data->shipping_option_id ?? null;
         $object->order_info = OrderInfo::createFromObject($data->order_info ?? null);
-        $object->telegram_payment_charge_id = $data->telegram_payment_charge_id;
-        $object->provider_payment_charge_id = $data->provider_payment_charge_id;
+
         return $object;
     }
 

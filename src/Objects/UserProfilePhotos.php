@@ -25,6 +25,18 @@ class UserProfilePhotos extends Object
     private $photos;
 
     /**
+     * UserProfilePhotos constructor.
+     *
+     * @param int $totalCount
+     * @param PhotoSize[] $photos
+     */
+    public function __construct(int $totalCount, array $photos)
+    {
+        $this->total_count = $totalCount;
+        $this->photos = $photos;
+    }
+
+    /**
      * Total number of profile pictures the target user has
      *
      * @return int
@@ -54,9 +66,12 @@ class UserProfilePhotos extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new UserProfilePhotos();
-        $object->total_count = $data->total_count;
-        $object->photos = PhotoSize::createFromObject($data->photos);
+        $object = new UserProfilePhotos(
+            $data->total_count,
+            PhotoSize::createFromObjectList($data->photos)
+        );
+
+
         return $object;
     }
 

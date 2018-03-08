@@ -69,6 +69,30 @@ class Sticker extends Object
     private $file_size;
 
     /**
+     * Sticker constructor.
+     *
+     * @param string $fileId
+     * @param int $width
+     * @param int $height
+     * @param PhotoSize|null $thumb
+     * @param string|null $emoji
+     * @param string|null $setName
+     * @param MaskPosition|null $maskPosition
+     * @param int|null $fileSize
+     */
+    public function __construct(string $fileId, int $width, int $height, ?PhotoSize $thumb = null, ?string $emoji = null, ?string $setName = null, ?MaskPosition $maskPosition = null, ?int $fileSize = null)
+    {
+        $this->file_id = $fileId;
+        $this->width = $width;
+        $this->height = $height;
+        $this->thumb = $thumb;
+        $this->emoji = $emoji;
+        $this->set_name = $setName;
+        $this->mask_position = $maskPosition;
+        $this->file_size = $fileSize;
+    }
+
+    /**
      * Unique identifier for this file
      *
      * @return string
@@ -158,15 +182,18 @@ class Sticker extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new Sticker();
-        $object->file_id = $data->file_id;
-        $object->width = $data->width;
-        $object->height = $data->height;
+        $object = new Sticker(
+            $data->file_id,
+            $data->width,
+            $data->height
+        );
+
         $object->thumb = PhotoSize::createFromObject($data->thumb ?? null);
         $object->emoji = $data->emoji ?? null;
         $object->set_name = $data->set_name ?? null;
         $object->mask_position = MaskPosition::createFromObject($data->mask_position ?? null);
         $object->file_size = $data->file_size ?? null;
+
         return $object;
     }
 

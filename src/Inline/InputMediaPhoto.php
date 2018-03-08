@@ -42,6 +42,22 @@ class InputMediaPhoto extends Object
     private $parse_mode;
 
     /**
+     * InputMediaPhoto constructor.
+     *
+     * @param string $type
+     * @param string $media
+     * @param string|null $caption
+     * @param string|null $parseMode
+     */
+    public function __construct(string $type, string $media, ?string $caption = null, ?string $parseMode = null)
+    {
+        $this->type = $type;
+        $this->media = $media;
+        $this->caption = $caption;
+        $this->parse_mode = $parseMode;
+    }
+
+    /**
      * Type of the result, must be photo
      *
      * @return string
@@ -94,11 +110,14 @@ class InputMediaPhoto extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InputMediaPhoto();
-        $object->type = $data->type;
-        $object->media = $data->media;
+        $object = new InputMediaPhoto(
+            $data->type,
+            $data->media
+        );
+
         $object->caption = $data->caption ?? null;
         $object->parse_mode = $data->parse_mode ?? null;
+
         return $object;
     }
 

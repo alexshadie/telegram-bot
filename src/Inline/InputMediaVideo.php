@@ -70,6 +70,30 @@ class InputMediaVideo extends Object
     private $supports_streaming;
 
     /**
+     * InputMediaVideo constructor.
+     *
+     * @param string $type
+     * @param string $media
+     * @param string|null $caption
+     * @param string|null $parseMode
+     * @param int|null $width
+     * @param int|null $height
+     * @param int|null $duration
+     * @param bool|null $supportsStreaming
+     */
+    public function __construct(string $type, string $media, ?string $caption = null, ?string $parseMode = null, ?int $width = null, ?int $height = null, ?int $duration = null, ?bool $supportsStreaming = null)
+    {
+        $this->type = $type;
+        $this->media = $media;
+        $this->caption = $caption;
+        $this->parse_mode = $parseMode;
+        $this->width = $width;
+        $this->height = $height;
+        $this->duration = $duration;
+        $this->supports_streaming = $supportsStreaming;
+    }
+
+    /**
      * Type of the result, must be video
      *
      * @return string
@@ -162,15 +186,18 @@ class InputMediaVideo extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InputMediaVideo();
-        $object->type = $data->type;
-        $object->media = $data->media;
+        $object = new InputMediaVideo(
+            $data->type,
+            $data->media
+        );
+
         $object->caption = $data->caption ?? null;
         $object->parse_mode = $data->parse_mode ?? null;
         $object->width = $data->width ?? null;
         $object->height = $data->height ?? null;
         $object->duration = $data->duration ?? null;
         $object->supports_streaming = $data->supports_streaming ?? null;
+
         return $object;
     }
 

@@ -43,6 +43,22 @@ class InlineQueryResultGame extends Object
     private $reply_markup;
 
     /**
+     * InlineQueryResultGame constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $gameShortName
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     */
+    public function __construct(string $type, string $id, string $gameShortName, ?InlineKeyboardMarkup $replyMarkup = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->game_short_name = $gameShortName;
+        $this->reply_markup = $replyMarkup;
+    }
+
+    /**
      * Type of the result, must be game
      *
      * @return string
@@ -92,11 +108,14 @@ class InlineQueryResultGame extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultGame();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->game_short_name = $data->game_short_name;
+        $object = new InlineQueryResultGame(
+            $data->type,
+            $data->id,
+            $data->game_short_name
+        );
+
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
+
         return $object;
     }
 

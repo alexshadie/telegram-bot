@@ -105,6 +105,40 @@ class Chat extends Object
     private $can_set_sticker_set;
 
     /**
+     * Chat constructor.
+     *
+     * @param int $id
+     * @param string $type
+     * @param string|null $title
+     * @param string|null $username
+     * @param string|null $firstName
+     * @param string|null $lastName
+     * @param bool|null $allMembersAreAdministrators
+     * @param ChatPhoto|null $photo
+     * @param string|null $description
+     * @param string|null $inviteLink
+     * @param Message|null $pinnedMessage
+     * @param string|null $stickerSetName
+     * @param bool|null $canSetStickerSet
+     */
+    public function __construct(int $id, string $type, ?string $title = null, ?string $username = null, ?string $firstName = null, ?string $lastName = null, ?bool $allMembersAreAdministrators = null, ?ChatPhoto $photo = null, ?string $description = null, ?string $inviteLink = null, ?Message $pinnedMessage = null, ?string $stickerSetName = null, ?bool $canSetStickerSet = null)
+    {
+        $this->id = $id;
+        $this->type = $type;
+        $this->title = $title;
+        $this->username = $username;
+        $this->first_name = $firstName;
+        $this->last_name = $lastName;
+        $this->all_members_are_administrators = $allMembersAreAdministrators;
+        $this->photo = $photo;
+        $this->description = $description;
+        $this->invite_link = $inviteLink;
+        $this->pinned_message = $pinnedMessage;
+        $this->sticker_set_name = $stickerSetName;
+        $this->can_set_sticker_set = $canSetStickerSet;
+    }
+
+    /**
      * Unique identifier for this chat. This number may be greater than 32 bits and some programming languages may have
      * difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or
      * double-precision float type are safe for storing this identifier.
@@ -246,9 +280,11 @@ class Chat extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new Chat();
-        $object->id = $data->id;
-        $object->type = $data->type;
+        $object = new Chat(
+            $data->id,
+            $data->type
+        );
+
         $object->title = $data->title ?? null;
         $object->username = $data->username ?? null;
         $object->first_name = $data->first_name ?? null;
@@ -260,6 +296,7 @@ class Chat extends Object
         $object->pinned_message = Message::createFromObject($data->pinned_message ?? null);
         $object->sticker_set_name = $data->sticker_set_name ?? null;
         $object->can_set_sticker_set = $data->can_set_sticker_set ?? null;
+
         return $object;
     }
 

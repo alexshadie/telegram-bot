@@ -72,6 +72,28 @@ class WebhookInfo extends Object
     private $allowed_updates;
 
     /**
+     * WebhookInfo constructor.
+     *
+     * @param string $url
+     * @param bool $hasCustomCertificate
+     * @param int $pendingUpdateCount
+     * @param int|null $lastErrorDate
+     * @param string|null $lastErrorMessage
+     * @param int|null $maxConnections
+     * @param string[]|null $allowedUpdates
+     */
+    public function __construct(string $url, bool $hasCustomCertificate, int $pendingUpdateCount, ?int $lastErrorDate = null, ?string $lastErrorMessage = null, ?int $maxConnections = null, ?array $allowedUpdates = null)
+    {
+        $this->url = $url;
+        $this->has_custom_certificate = $hasCustomCertificate;
+        $this->pending_update_count = $pendingUpdateCount;
+        $this->last_error_date = $lastErrorDate;
+        $this->last_error_message = $lastErrorMessage;
+        $this->max_connections = $maxConnections;
+        $this->allowed_updates = $allowedUpdates;
+    }
+
+    /**
      * Webhook URL, may be empty if webhook is not set up
      *
      * @return string
@@ -152,14 +174,17 @@ class WebhookInfo extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new WebhookInfo();
-        $object->url = $data->url;
-        $object->has_custom_certificate = $data->has_custom_certificate;
-        $object->pending_update_count = $data->pending_update_count;
+        $object = new WebhookInfo(
+            $data->url,
+            $data->has_custom_certificate,
+            $data->pending_update_count
+        );
+
         $object->last_error_date = $data->last_error_date ?? null;
         $object->last_error_message = $data->last_error_message ?? null;
         $object->max_connections = $data->max_connections ?? null;
         $object->allowed_updates = $data->allowed_updates ?? null;
+
         return $object;
     }
 

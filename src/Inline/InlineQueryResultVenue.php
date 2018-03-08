@@ -99,6 +99,38 @@ class InlineQueryResultVenue extends Object
     private $thumb_height;
 
     /**
+     * InlineQueryResultVenue constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param float $latitude
+     * @param float $longitude
+     * @param string $title
+     * @param string $address
+     * @param string|null $foursquareId
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     * @param string|null $thumbUrl
+     * @param int|null $thumbWidth
+     * @param int|null $thumbHeight
+     */
+    public function __construct(string $type, string $id, float $latitude, float $longitude, string $title, string $address, ?string $foursquareId = null, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null, ?string $thumbUrl = null, ?int $thumbWidth = null, ?int $thumbHeight = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
+        $this->title = $title;
+        $this->address = $address;
+        $this->foursquare_id = $foursquareId;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+        $this->thumb_url = $thumbUrl;
+        $this->thumb_width = $thumbWidth;
+        $this->thumb_height = $thumbHeight;
+    }
+
+    /**
      * Type of the result, must be venue
      *
      * @return string
@@ -228,19 +260,22 @@ class InlineQueryResultVenue extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultVenue();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->latitude = $data->latitude;
-        $object->longitude = $data->longitude;
-        $object->title = $data->title;
-        $object->address = $data->address;
+        $object = new InlineQueryResultVenue(
+            $data->type,
+            $data->id,
+            $data->latitude,
+            $data->longitude,
+            $data->title,
+            $data->address
+        );
+
         $object->foursquare_id = $data->foursquare_id ?? null;
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
         $object->thumb_url = $data->thumb_url ?? null;
         $object->thumb_width = $data->thumb_width ?? null;
         $object->thumb_height = $data->thumb_height ?? null;
+
         return $object;
     }
 

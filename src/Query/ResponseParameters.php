@@ -27,6 +27,18 @@ class ResponseParameters extends Object
     private $retry_after;
 
     /**
+     * ResponseParameters constructor.
+     *
+     * @param int|null $migrateToChatId
+     * @param int|null $retryAfter
+     */
+    public function __construct(?int $migrateToChatId = null, ?int $retryAfter = null)
+    {
+        $this->migrate_to_chat_id = $migrateToChatId;
+        $this->retry_after = $retryAfter;
+    }
+
+    /**
      * The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits
      * and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits,
      * so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
@@ -58,9 +70,13 @@ class ResponseParameters extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new ResponseParameters();
+        $object = new ResponseParameters(
+            
+        );
+
         $object->migrate_to_chat_id = $data->migrate_to_chat_id ?? null;
         $object->retry_after = $data->retry_after ?? null;
+
         return $object;
     }
 

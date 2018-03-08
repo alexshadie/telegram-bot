@@ -332,6 +332,98 @@ class Message extends Object
     private $connected_website;
 
     /**
+     * Message constructor.
+     *
+     * @param int $messageId
+     * @param User|null $from
+     * @param int $date
+     * @param Chat $chat
+     * @param User|null $forwardFrom
+     * @param Chat|null $forwardFromChat
+     * @param int|null $forwardFromMessageId
+     * @param string|null $forwardSignature
+     * @param int|null $forwardDate
+     * @param Message|null $replyToMessage
+     * @param int|null $editDate
+     * @param string|null $mediaGroupId
+     * @param string|null $authorSignature
+     * @param string|null $text
+     * @param MessageEntity[]|null $entities
+     * @param MessageEntity[]|null $captionEntities
+     * @param Audio|null $audio
+     * @param Document|null $document
+     * @param Game|null $game
+     * @param PhotoSize[]|null $photo
+     * @param Sticker|null $sticker
+     * @param Video|null $video
+     * @param Voice|null $voice
+     * @param VideoNote|null $videoNote
+     * @param string|null $caption
+     * @param Contact|null $contact
+     * @param Location|null $location
+     * @param Venue|null $venue
+     * @param User[]|null $newChatMembers
+     * @param User|null $leftChatMember
+     * @param string|null $newChatTitle
+     * @param PhotoSize[]|null $newChatPhoto
+     * @param bool|null $deleteChatPhoto
+     * @param bool|null $groupChatCreated
+     * @param bool|null $supergroupChatCreated
+     * @param bool|null $channelChatCreated
+     * @param int|null $migrateToChatId
+     * @param int|null $migrateFromChatId
+     * @param Message|null $pinnedMessage
+     * @param Invoice|null $invoice
+     * @param SuccessfulPayment|null $successfulPayment
+     * @param string|null $connectedWebsite
+     */
+    public function __construct(int $messageId, int $date, Chat $chat, ?User $from = null, ?User $forwardFrom = null, ?Chat $forwardFromChat = null, ?int $forwardFromMessageId = null, ?string $forwardSignature = null, ?int $forwardDate = null, ?Message $replyToMessage = null, ?int $editDate = null, ?string $mediaGroupId = null, ?string $authorSignature = null, ?string $text = null, ?array $entities = null, ?array $captionEntities = null, ?Audio $audio = null, ?Document $document = null, ?Game $game = null, ?array $photo = null, ?Sticker $sticker = null, ?Video $video = null, ?Voice $voice = null, ?VideoNote $videoNote = null, ?string $caption = null, ?Contact $contact = null, ?Location $location = null, ?Venue $venue = null, ?array $newChatMembers = null, ?User $leftChatMember = null, ?string $newChatTitle = null, ?array $newChatPhoto = null, ?bool $deleteChatPhoto = null, ?bool $groupChatCreated = null, ?bool $supergroupChatCreated = null, ?bool $channelChatCreated = null, ?int $migrateToChatId = null, ?int $migrateFromChatId = null, ?Message $pinnedMessage = null, ?Invoice $invoice = null, ?SuccessfulPayment $successfulPayment = null, ?string $connectedWebsite = null)
+    {
+        $this->message_id = $messageId;
+        $this->from = $from;
+        $this->date = $date;
+        $this->chat = $chat;
+        $this->forward_from = $forwardFrom;
+        $this->forward_from_chat = $forwardFromChat;
+        $this->forward_from_message_id = $forwardFromMessageId;
+        $this->forward_signature = $forwardSignature;
+        $this->forward_date = $forwardDate;
+        $this->reply_to_message = $replyToMessage;
+        $this->edit_date = $editDate;
+        $this->media_group_id = $mediaGroupId;
+        $this->author_signature = $authorSignature;
+        $this->text = $text;
+        $this->entities = $entities;
+        $this->caption_entities = $captionEntities;
+        $this->audio = $audio;
+        $this->document = $document;
+        $this->game = $game;
+        $this->photo = $photo;
+        $this->sticker = $sticker;
+        $this->video = $video;
+        $this->voice = $voice;
+        $this->video_note = $videoNote;
+        $this->caption = $caption;
+        $this->contact = $contact;
+        $this->location = $location;
+        $this->venue = $venue;
+        $this->new_chat_members = $newChatMembers;
+        $this->left_chat_member = $leftChatMember;
+        $this->new_chat_title = $newChatTitle;
+        $this->new_chat_photo = $newChatPhoto;
+        $this->delete_chat_photo = $deleteChatPhoto;
+        $this->group_chat_created = $groupChatCreated;
+        $this->supergroup_chat_created = $supergroupChatCreated;
+        $this->channel_chat_created = $channelChatCreated;
+        $this->migrate_to_chat_id = $migrateToChatId;
+        $this->migrate_from_chat_id = $migrateFromChatId;
+        $this->pinned_message = $pinnedMessage;
+        $this->invoice = $invoice;
+        $this->successful_payment = $successfulPayment;
+        $this->connected_website = $connectedWebsite;
+    }
+
+    /**
      * Unique message identifier inside this chat
      *
      * @return int
@@ -772,11 +864,13 @@ class Message extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new Message();
-        $object->message_id = $data->message_id;
+        $object = new Message(
+            $data->message_id,
+            $data->date,
+            Chat::createFromObject($data->chat)
+        );
+
         $object->from = User::createFromObject($data->from ?? null);
-        $object->date = $data->date;
-        $object->chat = Chat::createFromObject($data->chat);
         $object->forward_from = User::createFromObject($data->forward_from ?? null);
         $object->forward_from_chat = Chat::createFromObject($data->forward_from_chat ?? null);
         $object->forward_from_message_id = $data->forward_from_message_id ?? null;
@@ -815,6 +909,7 @@ class Message extends Object
         $object->invoice = Invoice::createFromObject($data->invoice ?? null);
         $object->successful_payment = SuccessfulPayment::createFromObject($data->successful_payment ?? null);
         $object->connected_website = $data->connected_website ?? null;
+
         return $object;
     }
 

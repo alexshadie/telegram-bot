@@ -129,6 +129,46 @@ class ChatMember extends Object
     private $can_add_web_page_previews;
 
     /**
+     * ChatMember constructor.
+     *
+     * @param User $user
+     * @param string $status
+     * @param int|null $untilDate
+     * @param bool|null $canBeEdited
+     * @param bool|null $canChangeInfo
+     * @param bool|null $canPostMessages
+     * @param bool|null $canEditMessages
+     * @param bool|null $canDeleteMessages
+     * @param bool|null $canInviteUsers
+     * @param bool|null $canRestrictMembers
+     * @param bool|null $canPinMessages
+     * @param bool|null $canPromoteMembers
+     * @param bool|null $canSendMessages
+     * @param bool|null $canSendMediaMessages
+     * @param bool|null $canSendOtherMessages
+     * @param bool|null $canAddWebPagePreviews
+     */
+    public function __construct(User $user, string $status, ?int $untilDate = null, ?bool $canBeEdited = null, ?bool $canChangeInfo = null, ?bool $canPostMessages = null, ?bool $canEditMessages = null, ?bool $canDeleteMessages = null, ?bool $canInviteUsers = null, ?bool $canRestrictMembers = null, ?bool $canPinMessages = null, ?bool $canPromoteMembers = null, ?bool $canSendMessages = null, ?bool $canSendMediaMessages = null, ?bool $canSendOtherMessages = null, ?bool $canAddWebPagePreviews = null)
+    {
+        $this->user = $user;
+        $this->status = $status;
+        $this->until_date = $untilDate;
+        $this->can_be_edited = $canBeEdited;
+        $this->can_change_info = $canChangeInfo;
+        $this->can_post_messages = $canPostMessages;
+        $this->can_edit_messages = $canEditMessages;
+        $this->can_delete_messages = $canDeleteMessages;
+        $this->can_invite_users = $canInviteUsers;
+        $this->can_restrict_members = $canRestrictMembers;
+        $this->can_pin_messages = $canPinMessages;
+        $this->can_promote_members = $canPromoteMembers;
+        $this->can_send_messages = $canSendMessages;
+        $this->can_send_media_messages = $canSendMediaMessages;
+        $this->can_send_other_messages = $canSendOtherMessages;
+        $this->can_add_web_page_previews = $canAddWebPagePreviews;
+    }
+
+    /**
      * Information about the user
      *
      * @return User
@@ -303,9 +343,11 @@ class ChatMember extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new ChatMember();
-        $object->user = User::createFromObject($data->user);
-        $object->status = $data->status;
+        $object = new ChatMember(
+            User::createFromObject($data->user),
+            $data->status
+        );
+
         $object->until_date = $data->until_date ?? null;
         $object->can_be_edited = $data->can_be_edited ?? null;
         $object->can_change_info = $data->can_change_info ?? null;
@@ -320,6 +362,7 @@ class ChatMember extends Object
         $object->can_send_media_messages = $data->can_send_media_messages ?? null;
         $object->can_send_other_messages = $data->can_send_other_messages ?? null;
         $object->can_add_web_page_previews = $data->can_add_web_page_previews ?? null;
+
         return $object;
     }
 

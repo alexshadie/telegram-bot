@@ -25,6 +25,18 @@ class ChatPhoto extends Object
     private $big_file_id;
 
     /**
+     * ChatPhoto constructor.
+     *
+     * @param string $smallFileId
+     * @param string $bigFileId
+     */
+    public function __construct(string $smallFileId, string $bigFileId)
+    {
+        $this->small_file_id = $smallFileId;
+        $this->big_file_id = $bigFileId;
+    }
+
+    /**
      * Unique file identifier of small (160x160) chat photo. This file_id can be used only for photo download.
      *
      * @return string
@@ -54,9 +66,12 @@ class ChatPhoto extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new ChatPhoto();
-        $object->small_file_id = $data->small_file_id;
-        $object->big_file_id = $data->big_file_id;
+        $object = new ChatPhoto(
+            $data->small_file_id,
+            $data->big_file_id
+        );
+
+
         return $object;
     }
 

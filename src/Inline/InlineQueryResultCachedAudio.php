@@ -66,6 +66,28 @@ class InlineQueryResultCachedAudio extends Object
     private $input_message_content;
 
     /**
+     * InlineQueryResultCachedAudio constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $audioFileId
+     * @param string|null $caption
+     * @param string|null $parseMode
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     */
+    public function __construct(string $type, string $id, string $audioFileId, ?string $caption = null, ?string $parseMode = null, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->audio_file_id = $audioFileId;
+        $this->caption = $caption;
+        $this->parse_mode = $parseMode;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+    }
+
+    /**
      * Type of the result, must be audio
      *
      * @return string
@@ -146,14 +168,17 @@ class InlineQueryResultCachedAudio extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultCachedAudio();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->audio_file_id = $data->audio_file_id;
+        $object = new InlineQueryResultCachedAudio(
+            $data->type,
+            $data->id,
+            $data->audio_file_id
+        );
+
         $object->caption = $data->caption ?? null;
         $object->parse_mode = $data->parse_mode ?? null;
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
+
         return $object;
     }
 

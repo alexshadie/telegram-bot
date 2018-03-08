@@ -46,6 +46,22 @@ class ReplyKeyboardMarkup extends Object
     private $selective;
 
     /**
+     * ReplyKeyboardMarkup constructor.
+     *
+     * @param KeyboardButton[] $keyboard
+     * @param bool|null $resizeKeyboard
+     * @param bool|null $oneTimeKeyboard
+     * @param bool|null $selective
+     */
+    public function __construct(array $keyboard, ?bool $resizeKeyboard = null, ?bool $oneTimeKeyboard = null, ?bool $selective = null)
+    {
+        $this->keyboard = $keyboard;
+        $this->resize_keyboard = $resizeKeyboard;
+        $this->one_time_keyboard = $oneTimeKeyboard;
+        $this->selective = $selective;
+    }
+
+    /**
      * Array of button rows, each represented by an Array of KeyboardButton objects
      *
      * @return KeyboardButton[]
@@ -102,11 +118,14 @@ class ReplyKeyboardMarkup extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new ReplyKeyboardMarkup();
-        $object->keyboard = KeyboardButton::createFromObject($data->keyboard);
+        $object = new ReplyKeyboardMarkup(
+            KeyboardButton::createFromObjectList($data->keyboard)
+        );
+
         $object->resize_keyboard = $data->resize_keyboard ?? null;
         $object->one_time_keyboard = $data->one_time_keyboard ?? null;
         $object->selective = $data->selective ?? null;
+
         return $object;
     }
 

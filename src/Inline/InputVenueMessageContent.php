@@ -48,6 +48,24 @@ class InputVenueMessageContent extends Object
     private $foursquare_id;
 
     /**
+     * InputVenueMessageContent constructor.
+     *
+     * @param float $latitude
+     * @param float $longitude
+     * @param string $title
+     * @param string $address
+     * @param string|null $foursquareId
+     */
+    public function __construct(float $latitude, float $longitude, string $title, string $address, ?string $foursquareId = null)
+    {
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
+        $this->title = $title;
+        $this->address = $address;
+        $this->foursquare_id = $foursquareId;
+    }
+
+    /**
      * Latitude of the venue in degrees
      *
      * @return float
@@ -107,12 +125,15 @@ class InputVenueMessageContent extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InputVenueMessageContent();
-        $object->latitude = $data->latitude;
-        $object->longitude = $data->longitude;
-        $object->title = $data->title;
-        $object->address = $data->address;
+        $object = new InputVenueMessageContent(
+            $data->latitude,
+            $data->longitude,
+            $data->title,
+            $data->address
+        );
+
         $object->foursquare_id = $data->foursquare_id ?? null;
+
         return $object;
     }
 

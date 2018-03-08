@@ -38,6 +38,20 @@ class File extends Object
     private $file_path;
 
     /**
+     * File constructor.
+     *
+     * @param string $fileId
+     * @param int|null $fileSize
+     * @param string|null $filePath
+     */
+    public function __construct(string $fileId, ?int $fileSize = null, ?string $filePath = null)
+    {
+        $this->file_id = $fileId;
+        $this->file_size = $fileSize;
+        $this->file_path = $filePath;
+    }
+
+    /**
      * Unique identifier for this file
      *
      * @return string
@@ -77,10 +91,13 @@ class File extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new File();
-        $object->file_id = $data->file_id;
+        $object = new File(
+            $data->file_id
+        );
+
         $object->file_size = $data->file_size ?? null;
         $object->file_path = $data->file_path ?? null;
+
         return $object;
     }
 

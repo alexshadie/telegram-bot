@@ -25,6 +25,18 @@ class Location extends Object
     private $latitude;
 
     /**
+     * Location constructor.
+     *
+     * @param float $longitude
+     * @param float $latitude
+     */
+    public function __construct(float $longitude, float $latitude)
+    {
+        $this->longitude = $longitude;
+        $this->latitude = $latitude;
+    }
+
+    /**
      * Longitude as defined by sender
      *
      * @return float
@@ -54,9 +66,12 @@ class Location extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new Location();
-        $object->longitude = $data->longitude;
-        $object->latitude = $data->latitude;
+        $object = new Location(
+            $data->longitude,
+            $data->latitude
+        );
+
+
         return $object;
     }
 

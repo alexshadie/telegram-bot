@@ -202,11 +202,13 @@ class ApiDocDefinitionsParser
         $props = [];
         $ctor = [];
         $ctorDoc = [];
-        $ctorArgs = [];
+        $ctorArgs = ['req' => [], 'opt' => []];
         $ctorBody = [];
         $getters = [];
         $methods = [];
         $create = [];
+        $createSet = [];
+        $createCtor = [];
 
         $testClass = [];
         $testMethods = [];
@@ -247,7 +249,7 @@ class ApiDocDefinitionsParser
         $create[] = "        if (is_null(\$data)) {";
         $create[] = "            return null;";
         $create[] = "        }";
-        $create[] = "        \$object = new " . $block->getName() . "();";
+        $create[] = "        \$object = new " . $block->getName() . "(";
 
         if ($block->getArgs()) {
             foreach ($block->getArgs() as $property) {
@@ -262,6 +264,7 @@ class ApiDocDefinitionsParser
                     'ns' => $this->getNamespace($this->getNsType($property['type'])),
                     'retType' => ($property['optional'] ? "?" : "") . $this->getRetType($property['type']),
                     'optional' => $property['optional'],
+                    'isArray' => $this->getRetType($property['type']) === 'array',
                 ];
 
                 $classInfo['props'][] = $propInfo;
@@ -300,21 +303,38 @@ class ApiDocDefinitionsParser
                 $getters[] = "    }";
                 $getters[] = "";
 
-                $ctorArgs[] = "{$propInfo['retType']} \${$propInfo['lCcName']}";
+                $ctorArgs[$propInfo['optional'] ? "opt" : "req"][] = "{$propInfo['retType']} \${$propInfo['lCcName']}" . ($propInfo['optional'] ? " = null" : "");
 
-                $ctorDoc[] = "     * @param \${$propInfo['lCcName']} {$propInfo['phpDocType']}";
+                $ctorDoc[] = "     * @param {$propInfo['phpDocType']} \${$propInfo['lCcName']}";
 
                 $ctorBody[] = "        \$this->{$propInfo['name']} = \${$propInfo['lCcName']};";
 
-                if ($propInfo['isCore']) {
-                    $create[] = "        \$object->{$propInfo['name']} = \$data->{$propInfo['name']}" . ($propInfo['optional'] ? " ?? null" : "") . ";";
+                if ($propInfo['optional']) {
+                    if ($propInfo['isCore']) {
+                        $createSet[] = "        \$object->{$propInfo['name']} = \$data->{$propInfo['name']}" . ($propInfo['optional'] ? " ?? null" : "") . ";";
+                    } else {
+                        $createSet[] = "        \$object->{$propInfo['name']} = {$propInfo['nsType']}::createFromObject(\$data->{$propInfo['name']}" . ($propInfo['optional'] ? " ?? null" : "") . ");";
+                    }
                 } else {
-                    $create[] = "        \$object->{$propInfo['name']} = {$propInfo['nsType']}::createFromObject(\$data->{$propInfo['name']}" . ($propInfo['optional'] ? " ?? null" : "") . ");";
+                    if ($propInfo['isCore']) {
+                        $createCtor[] = "\$data->{$propInfo['name']}" . ($propInfo['optional'] ? " ?? null" : "");
+                    } else {
+                        if ($propInfo['isArray']) {
+                            $createCtor[] = "{$propInfo['nsType']}::createFromObjectList(\$data->{$propInfo['name']}" . ($propInfo['optional'] ? " ?? null" : "") . ")";
+                        } else {
+                            $createCtor[] = "{$propInfo['nsType']}::createFromObject(\$data->{$propInfo['name']}" . ($propInfo['optional'] ? " ?? null" : "") . ")";
+                        }
+                    }
                 }
             }
         }
 
         $use[] = "";
+        $create[] = "            " . implode(",\n            ", $createCtor);
+        $create[] = "        );";
+        $create[] = "";
+        $create = array_merge($create, $createSet);
+        $create[] = "";
         $create[] = "        return \$object;";
         $create[] = "    }";
         $create[] = "";
@@ -340,7 +360,7 @@ class ApiDocDefinitionsParser
 
         $ctor = array_merge(
             $ctorDoc,
-            ["    public function __construct(" . implode(", ", $ctorArgs) . ")", "    {"],
+            ["    public function __construct(" . implode(", ", array_merge($ctorArgs['req'], $ctorArgs['opt'])) . ")", "    {"],
             $ctorBody,
             ["    }", ""]
         );
@@ -350,7 +370,7 @@ class ApiDocDefinitionsParser
             $use,
             $class,
             $props,
-//            $ctor,
+            $ctor,
             $getters,
             $methods,
             $create

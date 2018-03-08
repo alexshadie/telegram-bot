@@ -59,6 +59,24 @@ class ChosenInlineResult extends Object
     private $query;
 
     /**
+     * ChosenInlineResult constructor.
+     *
+     * @param string $resultId
+     * @param User $from
+     * @param Location|null $location
+     * @param string|null $inlineMessageId
+     * @param string $query
+     */
+    public function __construct(string $resultId, User $from, string $query, ?Location $location = null, ?string $inlineMessageId = null)
+    {
+        $this->result_id = $resultId;
+        $this->from = $from;
+        $this->location = $location;
+        $this->inline_message_id = $inlineMessageId;
+        $this->query = $query;
+    }
+
+    /**
      * The unique identifier for the result that was chosen
      *
      * @return string
@@ -119,12 +137,15 @@ class ChosenInlineResult extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new ChosenInlineResult();
-        $object->result_id = $data->result_id;
-        $object->from = User::createFromObject($data->from);
+        $object = new ChosenInlineResult(
+            $data->result_id,
+            User::createFromObject($data->from),
+            $data->query
+        );
+
         $object->location = Location::createFromObject($data->location ?? null);
         $object->inline_message_id = $data->inline_message_id ?? null;
-        $object->query = $data->query;
+
         return $object;
     }
 

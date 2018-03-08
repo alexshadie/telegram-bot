@@ -99,6 +99,38 @@ class InlineQueryResultGif extends Object
     private $input_message_content;
 
     /**
+     * InlineQueryResultGif constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $gifUrl
+     * @param int|null $gifWidth
+     * @param int|null $gifHeight
+     * @param int|null $gifDuration
+     * @param string $thumbUrl
+     * @param string|null $title
+     * @param string|null $caption
+     * @param string|null $parseMode
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     */
+    public function __construct(string $type, string $id, string $gifUrl, string $thumbUrl, ?int $gifWidth = null, ?int $gifHeight = null, ?int $gifDuration = null, ?string $title = null, ?string $caption = null, ?string $parseMode = null, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->gif_url = $gifUrl;
+        $this->gif_width = $gifWidth;
+        $this->gif_height = $gifHeight;
+        $this->gif_duration = $gifDuration;
+        $this->thumb_url = $thumbUrl;
+        $this->title = $title;
+        $this->caption = $caption;
+        $this->parse_mode = $parseMode;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+    }
+
+    /**
      * Type of the result, must be gif
      *
      * @return string
@@ -229,19 +261,22 @@ class InlineQueryResultGif extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultGif();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->gif_url = $data->gif_url;
+        $object = new InlineQueryResultGif(
+            $data->type,
+            $data->id,
+            $data->gif_url,
+            $data->thumb_url
+        );
+
         $object->gif_width = $data->gif_width ?? null;
         $object->gif_height = $data->gif_height ?? null;
         $object->gif_duration = $data->gif_duration ?? null;
-        $object->thumb_url = $data->thumb_url;
         $object->title = $data->title ?? null;
         $object->caption = $data->caption ?? null;
         $object->parse_mode = $data->parse_mode ?? null;
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
+
         return $object;
     }
 

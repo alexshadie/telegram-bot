@@ -89,6 +89,36 @@ class InlineQueryResultArticle extends Object
     private $thumb_height;
 
     /**
+     * InlineQueryResultArticle constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $title
+     * @param InputMessageContent $inputMessageContent
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param string|null $url
+     * @param bool|null $hideUrl
+     * @param string|null $description
+     * @param string|null $thumbUrl
+     * @param int|null $thumbWidth
+     * @param int|null $thumbHeight
+     */
+    public function __construct(string $type, string $id, string $title, InputMessageContent $inputMessageContent, ?InlineKeyboardMarkup $replyMarkup = null, ?string $url = null, ?bool $hideUrl = null, ?string $description = null, ?string $thumbUrl = null, ?int $thumbWidth = null, ?int $thumbHeight = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->title = $title;
+        $this->input_message_content = $inputMessageContent;
+        $this->reply_markup = $replyMarkup;
+        $this->url = $url;
+        $this->hide_url = $hideUrl;
+        $this->description = $description;
+        $this->thumb_url = $thumbUrl;
+        $this->thumb_width = $thumbWidth;
+        $this->thumb_height = $thumbHeight;
+    }
+
+    /**
      * Type of the result, must be article
      *
      * @return string
@@ -208,11 +238,13 @@ class InlineQueryResultArticle extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultArticle();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->title = $data->title;
-        $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content);
+        $object = new InlineQueryResultArticle(
+            $data->type,
+            $data->id,
+            $data->title,
+            InputMessageContent::createFromObject($data->input_message_content)
+        );
+
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->url = $data->url ?? null;
         $object->hide_url = $data->hide_url ?? null;
@@ -220,6 +252,7 @@ class InlineQueryResultArticle extends Object
         $object->thumb_url = $data->thumb_url ?? null;
         $object->thumb_width = $data->thumb_width ?? null;
         $object->thumb_height = $data->thumb_height ?? null;
+
         return $object;
     }
 

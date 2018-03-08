@@ -108,6 +108,40 @@ class InlineQueryResultDocument extends Object
     private $thumb_height;
 
     /**
+     * InlineQueryResultDocument constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $title
+     * @param string|null $caption
+     * @param string|null $parseMode
+     * @param string $documentUrl
+     * @param string $mimeType
+     * @param string|null $description
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     * @param string|null $thumbUrl
+     * @param int|null $thumbWidth
+     * @param int|null $thumbHeight
+     */
+    public function __construct(string $type, string $id, string $title, string $documentUrl, string $mimeType, ?string $caption = null, ?string $parseMode = null, ?string $description = null, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null, ?string $thumbUrl = null, ?int $thumbWidth = null, ?int $thumbHeight = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->title = $title;
+        $this->caption = $caption;
+        $this->parse_mode = $parseMode;
+        $this->document_url = $documentUrl;
+        $this->mime_type = $mimeType;
+        $this->description = $description;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+        $this->thumb_url = $thumbUrl;
+        $this->thumb_width = $thumbWidth;
+        $this->thumb_height = $thumbHeight;
+    }
+
+    /**
      * Type of the result, must be document
      *
      * @return string
@@ -248,20 +282,23 @@ class InlineQueryResultDocument extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultDocument();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->title = $data->title;
+        $object = new InlineQueryResultDocument(
+            $data->type,
+            $data->id,
+            $data->title,
+            $data->document_url,
+            $data->mime_type
+        );
+
         $object->caption = $data->caption ?? null;
         $object->parse_mode = $data->parse_mode ?? null;
-        $object->document_url = $data->document_url;
-        $object->mime_type = $data->mime_type;
         $object->description = $data->description ?? null;
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
         $object->thumb_url = $data->thumb_url ?? null;
         $object->thumb_width = $data->thumb_width ?? null;
         $object->thumb_height = $data->thumb_height ?? null;
+
         return $object;
     }
 

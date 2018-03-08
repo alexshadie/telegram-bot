@@ -68,6 +68,28 @@ class InlineKeyboardButton extends Object
     private $pay;
 
     /**
+     * InlineKeyboardButton constructor.
+     *
+     * @param string $text
+     * @param string|null $url
+     * @param string|null $callbackData
+     * @param string|null $switchInlineQuery
+     * @param string|null $switchInlineQueryCurrentChat
+     * @param CallbackGame|null $callbackGame
+     * @param bool|null $pay
+     */
+    public function __construct(string $text, ?string $url = null, ?string $callbackData = null, ?string $switchInlineQuery = null, ?string $switchInlineQueryCurrentChat = null, ?CallbackGame $callbackGame = null, ?bool $pay = null)
+    {
+        $this->text = $text;
+        $this->url = $url;
+        $this->callback_data = $callbackData;
+        $this->switch_inline_query = $switchInlineQuery;
+        $this->switch_inline_query_current_chat = $switchInlineQueryCurrentChat;
+        $this->callback_game = $callbackGame;
+        $this->pay = $pay;
+    }
+
+    /**
      * Label text on the button
      *
      * @return string
@@ -154,14 +176,17 @@ class InlineKeyboardButton extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineKeyboardButton();
-        $object->text = $data->text;
+        $object = new InlineKeyboardButton(
+            $data->text
+        );
+
         $object->url = $data->url ?? null;
         $object->callback_data = $data->callback_data ?? null;
         $object->switch_inline_query = $data->switch_inline_query ?? null;
         $object->switch_inline_query_current_chat = $data->switch_inline_query_current_chat ?? null;
         $object->callback_game = CallbackGame::createFromObject($data->callback_game ?? null);
         $object->pay = $data->pay ?? null;
+
         return $object;
     }
 

@@ -32,6 +32,20 @@ class ShippingOption extends Object
     private $prices;
 
     /**
+     * ShippingOption constructor.
+     *
+     * @param string $id
+     * @param string $title
+     * @param LabeledPrice[] $prices
+     */
+    public function __construct(string $id, string $title, array $prices)
+    {
+        $this->id = $id;
+        $this->title = $title;
+        $this->prices = $prices;
+    }
+
+    /**
      * Shipping option identifier
      *
      * @return string
@@ -71,10 +85,13 @@ class ShippingOption extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new ShippingOption();
-        $object->id = $data->id;
-        $object->title = $data->title;
-        $object->prices = LabeledPrice::createFromObject($data->prices);
+        $object = new ShippingOption(
+            $data->id,
+            $data->title,
+            LabeledPrice::createFromObjectList($data->prices)
+        );
+
+
         return $object;
     }
 

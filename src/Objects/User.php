@@ -52,6 +52,26 @@ class User extends Object
     private $language_code;
 
     /**
+     * User constructor.
+     *
+     * @param int $id
+     * @param bool $isBot
+     * @param string $firstName
+     * @param string|null $lastName
+     * @param string|null $username
+     * @param string|null $languageCode
+     */
+    public function __construct(int $id, bool $isBot, string $firstName, ?string $lastName = null, ?string $username = null, ?string $languageCode = null)
+    {
+        $this->id = $id;
+        $this->is_bot = $isBot;
+        $this->first_name = $firstName;
+        $this->last_name = $lastName;
+        $this->username = $username;
+        $this->language_code = $languageCode;
+    }
+
+    /**
      * Unique identifier for this user or bot
      *
      * @return int
@@ -121,13 +141,16 @@ class User extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new User();
-        $object->id = $data->id;
-        $object->is_bot = $data->is_bot;
-        $object->first_name = $data->first_name;
+        $object = new User(
+            $data->id,
+            $data->is_bot,
+            $data->first_name
+        );
+
         $object->last_name = $data->last_name ?? null;
         $object->username = $data->username ?? null;
         $object->language_code = $data->language_code ?? null;
+
         return $object;
     }
 

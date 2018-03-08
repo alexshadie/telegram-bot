@@ -72,6 +72,28 @@ class CallbackQuery extends Object
     private $game_short_name;
 
     /**
+     * CallbackQuery constructor.
+     *
+     * @param string $id
+     * @param User $from
+     * @param Message|null $message
+     * @param string|null $inlineMessageId
+     * @param string $chatInstance
+     * @param string|null $data
+     * @param string|null $gameShortName
+     */
+    public function __construct(string $id, User $from, string $chatInstance, ?Message $message = null, ?string $inlineMessageId = null, ?string $data = null, ?string $gameShortName = null)
+    {
+        $this->id = $id;
+        $this->from = $from;
+        $this->message = $message;
+        $this->inline_message_id = $inlineMessageId;
+        $this->chat_instance = $chatInstance;
+        $this->data = $data;
+        $this->game_short_name = $gameShortName;
+    }
+
+    /**
      * Unique identifier for this query
      *
      * @return string
@@ -153,14 +175,17 @@ class CallbackQuery extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new CallbackQuery();
-        $object->id = $data->id;
-        $object->from = User::createFromObject($data->from);
+        $object = new CallbackQuery(
+            $data->id,
+            User::createFromObject($data->from),
+            $data->chat_instance
+        );
+
         $object->message = Message::createFromObject($data->message ?? null);
         $object->inline_message_id = $data->inline_message_id ?? null;
-        $object->chat_instance = $data->chat_instance;
         $object->data = $data->data ?? null;
         $object->game_short_name = $data->game_short_name ?? null;
+
         return $object;
     }
 

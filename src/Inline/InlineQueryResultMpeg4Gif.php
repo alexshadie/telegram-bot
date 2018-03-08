@@ -99,6 +99,38 @@ class InlineQueryResultMpeg4Gif extends Object
     private $input_message_content;
 
     /**
+     * InlineQueryResultMpeg4Gif constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $mpeg4Url
+     * @param int|null $mpeg4Width
+     * @param int|null $mpeg4Height
+     * @param int|null $mpeg4Duration
+     * @param string $thumbUrl
+     * @param string|null $title
+     * @param string|null $caption
+     * @param string|null $parseMode
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     */
+    public function __construct(string $type, string $id, string $mpeg4Url, string $thumbUrl, ?int $mpeg4Width = null, ?int $mpeg4Height = null, ?int $mpeg4Duration = null, ?string $title = null, ?string $caption = null, ?string $parseMode = null, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->mpeg4_url = $mpeg4Url;
+        $this->mpeg4_width = $mpeg4Width;
+        $this->mpeg4_height = $mpeg4Height;
+        $this->mpeg4_duration = $mpeg4Duration;
+        $this->thumb_url = $thumbUrl;
+        $this->title = $title;
+        $this->caption = $caption;
+        $this->parse_mode = $parseMode;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+    }
+
+    /**
      * Type of the result, must be mpeg4_gif
      *
      * @return string
@@ -229,19 +261,22 @@ class InlineQueryResultMpeg4Gif extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultMpeg4Gif();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->mpeg4_url = $data->mpeg4_url;
+        $object = new InlineQueryResultMpeg4Gif(
+            $data->type,
+            $data->id,
+            $data->mpeg4_url,
+            $data->thumb_url
+        );
+
         $object->mpeg4_width = $data->mpeg4_width ?? null;
         $object->mpeg4_height = $data->mpeg4_height ?? null;
         $object->mpeg4_duration = $data->mpeg4_duration ?? null;
-        $object->thumb_url = $data->thumb_url;
         $object->title = $data->title ?? null;
         $object->caption = $data->caption ?? null;
         $object->parse_mode = $data->parse_mode ?? null;
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
+
         return $object;
     }
 

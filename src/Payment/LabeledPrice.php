@@ -27,6 +27,18 @@ class LabeledPrice extends Object
     private $amount;
 
     /**
+     * LabeledPrice constructor.
+     *
+     * @param string $label
+     * @param int $amount
+     */
+    public function __construct(string $label, int $amount)
+    {
+        $this->label = $label;
+        $this->amount = $amount;
+    }
+
+    /**
      * Portion label
      *
      * @return string
@@ -58,9 +70,12 @@ class LabeledPrice extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new LabeledPrice();
-        $object->label = $data->label;
-        $object->amount = $data->amount;
+        $object = new LabeledPrice(
+            $data->label,
+            $data->amount
+        );
+
+
         return $object;
     }
 

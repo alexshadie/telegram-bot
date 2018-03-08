@@ -80,6 +80,32 @@ class InlineQueryResultCachedDocument extends Object
     private $input_message_content;
 
     /**
+     * InlineQueryResultCachedDocument constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $title
+     * @param string $documentFileId
+     * @param string|null $description
+     * @param string|null $caption
+     * @param string|null $parseMode
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     */
+    public function __construct(string $type, string $id, string $title, string $documentFileId, ?string $description = null, ?string $caption = null, ?string $parseMode = null, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->title = $title;
+        $this->document_file_id = $documentFileId;
+        $this->description = $description;
+        $this->caption = $caption;
+        $this->parse_mode = $parseMode;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+    }
+
+    /**
      * Type of the result, must be document
      *
      * @return string
@@ -180,16 +206,19 @@ class InlineQueryResultCachedDocument extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultCachedDocument();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->title = $data->title;
-        $object->document_file_id = $data->document_file_id;
+        $object = new InlineQueryResultCachedDocument(
+            $data->type,
+            $data->id,
+            $data->title,
+            $data->document_file_id
+        );
+
         $object->description = $data->description ?? null;
         $object->caption = $data->caption ?? null;
         $object->parse_mode = $data->parse_mode ?? null;
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
+
         return $object;
     }
 

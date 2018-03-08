@@ -40,6 +40,22 @@ class ShippingQuery extends Object
     private $shipping_address;
 
     /**
+     * ShippingQuery constructor.
+     *
+     * @param string $id
+     * @param User $from
+     * @param string $invoicePayload
+     * @param ShippingAddress $shippingAddress
+     */
+    public function __construct(string $id, User $from, string $invoicePayload, ShippingAddress $shippingAddress)
+    {
+        $this->id = $id;
+        $this->from = $from;
+        $this->invoice_payload = $invoicePayload;
+        $this->shipping_address = $shippingAddress;
+    }
+
+    /**
      * Unique query identifier
      *
      * @return string
@@ -89,11 +105,14 @@ class ShippingQuery extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new ShippingQuery();
-        $object->id = $data->id;
-        $object->from = User::createFromObject($data->from);
-        $object->invoice_payload = $data->invoice_payload;
-        $object->shipping_address = ShippingAddress::createFromObject($data->shipping_address);
+        $object = new ShippingQuery(
+            $data->id,
+            User::createFromObject($data->from),
+            $data->invoice_payload,
+            ShippingAddress::createFromObject($data->shipping_address)
+        );
+
+
         return $object;
     }
 

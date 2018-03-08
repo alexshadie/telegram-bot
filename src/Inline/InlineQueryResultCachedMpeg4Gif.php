@@ -71,6 +71,30 @@ class InlineQueryResultCachedMpeg4Gif extends Object
     private $input_message_content;
 
     /**
+     * InlineQueryResultCachedMpeg4Gif constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $mpeg4FileId
+     * @param string|null $title
+     * @param string|null $caption
+     * @param string|null $parseMode
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     */
+    public function __construct(string $type, string $id, string $mpeg4FileId, ?string $title = null, ?string $caption = null, ?string $parseMode = null, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->mpeg4_file_id = $mpeg4FileId;
+        $this->title = $title;
+        $this->caption = $caption;
+        $this->parse_mode = $parseMode;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+    }
+
+    /**
      * Type of the result, must be mpeg4_gif
      *
      * @return string
@@ -161,15 +185,18 @@ class InlineQueryResultCachedMpeg4Gif extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultCachedMpeg4Gif();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->mpeg4_file_id = $data->mpeg4_file_id;
+        $object = new InlineQueryResultCachedMpeg4Gif(
+            $data->type,
+            $data->id,
+            $data->mpeg4_file_id
+        );
+
         $object->title = $data->title ?? null;
         $object->caption = $data->caption ?? null;
         $object->parse_mode = $data->parse_mode ?? null;
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
+
         return $object;
     }
 

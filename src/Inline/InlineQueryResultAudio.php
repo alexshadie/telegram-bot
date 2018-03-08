@@ -86,6 +86,34 @@ class InlineQueryResultAudio extends Object
     private $input_message_content;
 
     /**
+     * InlineQueryResultAudio constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $audioUrl
+     * @param string $title
+     * @param string|null $caption
+     * @param string|null $parseMode
+     * @param string|null $performer
+     * @param int|null $audioDuration
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     */
+    public function __construct(string $type, string $id, string $audioUrl, string $title, ?string $caption = null, ?string $parseMode = null, ?string $performer = null, ?int $audioDuration = null, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->audio_url = $audioUrl;
+        $this->title = $title;
+        $this->caption = $caption;
+        $this->parse_mode = $parseMode;
+        $this->performer = $performer;
+        $this->audio_duration = $audioDuration;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+    }
+
+    /**
      * Type of the result, must be audio
      *
      * @return string
@@ -196,17 +224,20 @@ class InlineQueryResultAudio extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultAudio();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->audio_url = $data->audio_url;
-        $object->title = $data->title;
+        $object = new InlineQueryResultAudio(
+            $data->type,
+            $data->id,
+            $data->audio_url,
+            $data->title
+        );
+
         $object->caption = $data->caption ?? null;
         $object->parse_mode = $data->parse_mode ?? null;
         $object->performer = $data->performer ?? null;
         $object->audio_duration = $data->audio_duration ?? null;
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
+
         return $object;
     }
 

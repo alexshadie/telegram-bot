@@ -34,6 +34,20 @@ class InputLocationMessageContent extends Object
     private $live_period;
 
     /**
+     * InputLocationMessageContent constructor.
+     *
+     * @param float $latitude
+     * @param float $longitude
+     * @param int|null $livePeriod
+     */
+    public function __construct(float $latitude, float $longitude, ?int $livePeriod = null)
+    {
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
+        $this->live_period = $livePeriod;
+    }
+
+    /**
      * Latitude of the location in degrees
      *
      * @return float
@@ -73,10 +87,13 @@ class InputLocationMessageContent extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InputLocationMessageContent();
-        $object->latitude = $data->latitude;
-        $object->longitude = $data->longitude;
+        $object = new InputLocationMessageContent(
+            $data->latitude,
+            $data->longitude
+        );
+
         $object->live_period = $data->live_period ?? null;
+
         return $object;
     }
 

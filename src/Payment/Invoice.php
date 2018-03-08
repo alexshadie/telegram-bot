@@ -48,6 +48,24 @@ class Invoice extends Object
     private $total_amount;
 
     /**
+     * Invoice constructor.
+     *
+     * @param string $title
+     * @param string $description
+     * @param string $startParameter
+     * @param string $currency
+     * @param int $totalAmount
+     */
+    public function __construct(string $title, string $description, string $startParameter, string $currency, int $totalAmount)
+    {
+        $this->title = $title;
+        $this->description = $description;
+        $this->start_parameter = $startParameter;
+        $this->currency = $currency;
+        $this->total_amount = $totalAmount;
+    }
+
+    /**
      * Product name
      *
      * @return string
@@ -109,12 +127,15 @@ class Invoice extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new Invoice();
-        $object->title = $data->title;
-        $object->description = $data->description;
-        $object->start_parameter = $data->start_parameter;
-        $object->currency = $data->currency;
-        $object->total_amount = $data->total_amount;
+        $object = new Invoice(
+            $data->title,
+            $data->description,
+            $data->start_parameter,
+            $data->currency,
+            $data->total_amount
+        );
+
+
         return $object;
     }
 

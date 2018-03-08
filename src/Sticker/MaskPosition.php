@@ -42,6 +42,22 @@ class MaskPosition extends Object
     private $scale;
 
     /**
+     * MaskPosition constructor.
+     *
+     * @param string $point
+     * @param float $xShift
+     * @param float $yShift
+     * @param float $scale
+     */
+    public function __construct(string $point, float $xShift, float $yShift, float $scale)
+    {
+        $this->point = $point;
+        $this->x_shift = $xShift;
+        $this->y_shift = $yShift;
+        $this->scale = $scale;
+    }
+
+    /**
      * The part of the face relative to which the mask should be placed. One of “forehead”, “eyes”, “mouth”, or
      * “chin”.
      *
@@ -94,11 +110,14 @@ class MaskPosition extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new MaskPosition();
-        $object->point = $data->point;
-        $object->x_shift = $data->x_shift;
-        $object->y_shift = $data->y_shift;
-        $object->scale = $data->scale;
+        $object = new MaskPosition(
+            $data->point,
+            $data->x_shift,
+            $data->y_shift,
+            $data->scale
+        );
+
+
         return $object;
     }
 

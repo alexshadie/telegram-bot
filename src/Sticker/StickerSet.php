@@ -40,6 +40,22 @@ class StickerSet extends Object
     private $stickers;
 
     /**
+     * StickerSet constructor.
+     *
+     * @param string $name
+     * @param string $title
+     * @param bool $containsMasks
+     * @param Sticker[] $stickers
+     */
+    public function __construct(string $name, string $title, bool $containsMasks, array $stickers)
+    {
+        $this->name = $name;
+        $this->title = $title;
+        $this->contains_masks = $containsMasks;
+        $this->stickers = $stickers;
+    }
+
+    /**
      * Sticker set name
      *
      * @return string
@@ -89,11 +105,14 @@ class StickerSet extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new StickerSet();
-        $object->name = $data->name;
-        $object->title = $data->title;
-        $object->contains_masks = $data->contains_masks;
-        $object->stickers = Sticker::createFromObject($data->stickers);
+        $object = new StickerSet(
+            $data->name,
+            $data->title,
+            $data->contains_masks,
+            Sticker::createFromObjectList($data->stickers)
+        );
+
+
         return $object;
     }
 

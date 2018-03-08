@@ -39,6 +39,22 @@ class PhotoSize extends Object
     private $file_size;
 
     /**
+     * PhotoSize constructor.
+     *
+     * @param string $fileId
+     * @param int $width
+     * @param int $height
+     * @param int|null $fileSize
+     */
+    public function __construct(string $fileId, int $width, int $height, ?int $fileSize = null)
+    {
+        $this->file_id = $fileId;
+        $this->width = $width;
+        $this->height = $height;
+        $this->file_size = $fileSize;
+    }
+
+    /**
      * Unique identifier for this file
      *
      * @return string
@@ -88,11 +104,14 @@ class PhotoSize extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new PhotoSize();
-        $object->file_id = $data->file_id;
-        $object->width = $data->width;
-        $object->height = $data->height;
+        $object = new PhotoSize(
+            $data->file_id,
+            $data->width,
+            $data->height
+        );
+
         $object->file_size = $data->file_size ?? null;
+
         return $object;
     }
 

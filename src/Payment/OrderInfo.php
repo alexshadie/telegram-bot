@@ -39,6 +39,22 @@ class OrderInfo extends Object
     private $shipping_address;
 
     /**
+     * OrderInfo constructor.
+     *
+     * @param string|null $name
+     * @param string|null $phoneNumber
+     * @param string|null $email
+     * @param ShippingAddress|null $shippingAddress
+     */
+    public function __construct(?string $name = null, ?string $phoneNumber = null, ?string $email = null, ?ShippingAddress $shippingAddress = null)
+    {
+        $this->name = $name;
+        $this->phone_number = $phoneNumber;
+        $this->email = $email;
+        $this->shipping_address = $shippingAddress;
+    }
+
+    /**
      * User name
      *
      * @return string|null
@@ -88,11 +104,15 @@ class OrderInfo extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new OrderInfo();
+        $object = new OrderInfo(
+            
+        );
+
         $object->name = $data->name ?? null;
         $object->phone_number = $data->phone_number ?? null;
         $object->email = $data->email ?? null;
         $object->shipping_address = ShippingAddress::createFromObject($data->shipping_address ?? null);
+
         return $object;
     }
 

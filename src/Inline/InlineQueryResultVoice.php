@@ -80,6 +80,32 @@ class InlineQueryResultVoice extends Object
     private $input_message_content;
 
     /**
+     * InlineQueryResultVoice constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $voiceUrl
+     * @param string $title
+     * @param string|null $caption
+     * @param string|null $parseMode
+     * @param int|null $voiceDuration
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     */
+    public function __construct(string $type, string $id, string $voiceUrl, string $title, ?string $caption = null, ?string $parseMode = null, ?int $voiceDuration = null, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->voice_url = $voiceUrl;
+        $this->title = $title;
+        $this->caption = $caption;
+        $this->parse_mode = $parseMode;
+        $this->voice_duration = $voiceDuration;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+    }
+
+    /**
      * Type of the result, must be voice
      *
      * @return string
@@ -180,16 +206,19 @@ class InlineQueryResultVoice extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultVoice();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->voice_url = $data->voice_url;
-        $object->title = $data->title;
+        $object = new InlineQueryResultVoice(
+            $data->type,
+            $data->id,
+            $data->voice_url,
+            $data->title
+        );
+
         $object->caption = $data->caption ?? null;
         $object->parse_mode = $data->parse_mode ?? null;
         $object->voice_duration = $data->voice_duration ?? null;
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
+
         return $object;
     }
 

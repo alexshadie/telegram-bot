@@ -17,6 +17,14 @@ use alexshadie\TelegramBot\Objects\Object;
 class InputMedia extends Object
 {
     /**
+     * InputMedia constructor.
+     *
+     */
+    public function __construct()
+    {
+    }
+
+    /**
       * Creates InputMedia object from data.
       * @param \stdClass $data
       * @return InputMedia
@@ -26,7 +34,11 @@ class InputMedia extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InputMedia();
+        $object = new InputMedia(
+            
+        );
+
+
         return $object;
     }
 

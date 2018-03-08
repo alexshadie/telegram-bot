@@ -11,6 +11,14 @@ namespace alexshadie\TelegramBot\Objects;
 class InputFile extends Object
 {
     /**
+     * InputFile constructor.
+     *
+     */
+    public function __construct()
+    {
+    }
+
+    /**
       * Creates InputFile object from data.
       * @param \stdClass $data
       * @return InputFile
@@ -20,7 +28,11 @@ class InputFile extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InputFile();
+        $object = new InputFile(
+            
+        );
+
+
         return $object;
     }
 

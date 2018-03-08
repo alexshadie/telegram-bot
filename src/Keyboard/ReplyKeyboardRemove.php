@@ -32,6 +32,18 @@ class ReplyKeyboardRemove extends Object
     private $selective;
 
     /**
+     * ReplyKeyboardRemove constructor.
+     *
+     * @param bool $removeKeyboard
+     * @param bool|null $selective
+     */
+    public function __construct(bool $removeKeyboard, ?bool $selective = null)
+    {
+        $this->remove_keyboard = $removeKeyboard;
+        $this->selective = $selective;
+    }
+
+    /**
      * Requests clients to remove the custom keyboard (user will not be able to summon this keyboard; if you want to hide
      * the keyboard from sight but keep it accessible, use one_time_keyboard in ReplyKeyboardMarkup)
      *
@@ -65,9 +77,12 @@ class ReplyKeyboardRemove extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new ReplyKeyboardRemove();
-        $object->remove_keyboard = $data->remove_keyboard;
+        $object = new ReplyKeyboardRemove(
+            $data->remove_keyboard
+        );
+
         $object->selective = $data->selective ?? null;
+
         return $object;
     }
 

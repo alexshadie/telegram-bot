@@ -119,6 +119,42 @@ class InlineQueryResultVideo extends Object
     private $input_message_content;
 
     /**
+     * InlineQueryResultVideo constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $videoUrl
+     * @param string $mimeType
+     * @param string $thumbUrl
+     * @param string $title
+     * @param string|null $caption
+     * @param string|null $parseMode
+     * @param int|null $videoWidth
+     * @param int|null $videoHeight
+     * @param int|null $videoDuration
+     * @param string|null $description
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     */
+    public function __construct(string $type, string $id, string $videoUrl, string $mimeType, string $thumbUrl, string $title, ?string $caption = null, ?string $parseMode = null, ?int $videoWidth = null, ?int $videoHeight = null, ?int $videoDuration = null, ?string $description = null, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->video_url = $videoUrl;
+        $this->mime_type = $mimeType;
+        $this->thumb_url = $thumbUrl;
+        $this->title = $title;
+        $this->caption = $caption;
+        $this->parse_mode = $parseMode;
+        $this->video_width = $videoWidth;
+        $this->video_height = $videoHeight;
+        $this->video_duration = $videoDuration;
+        $this->description = $description;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+    }
+
+    /**
      * Type of the result, must be video
      *
      * @return string
@@ -270,13 +306,15 @@ class InlineQueryResultVideo extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultVideo();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->video_url = $data->video_url;
-        $object->mime_type = $data->mime_type;
-        $object->thumb_url = $data->thumb_url;
-        $object->title = $data->title;
+        $object = new InlineQueryResultVideo(
+            $data->type,
+            $data->id,
+            $data->video_url,
+            $data->mime_type,
+            $data->thumb_url,
+            $data->title
+        );
+
         $object->caption = $data->caption ?? null;
         $object->parse_mode = $data->parse_mode ?? null;
         $object->video_width = $data->video_width ?? null;
@@ -285,6 +323,7 @@ class InlineQueryResultVideo extends Object
         $object->description = $data->description ?? null;
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
+
         return $object;
     }
 

@@ -88,6 +88,7 @@ class AbstractBotTest extends TestCase
     {
         $bot = $this->getBot(1, 1, 0);
         $update = $this->getMockBuilder(Update::class)
+            ->disableOriginalConstructor()
             ->getMock();
         $update->expects($this->never())
             ->method('getMessage');
@@ -102,6 +103,7 @@ class AbstractBotTest extends TestCase
     {
         $bot = $this->getBot(1, 0, 1);
         $update = $this->getMockBuilder(Update::class)
+            ->disableOriginalConstructor()
             ->getMock();
         $update->expects($this->never())
             ->method('getMessage');
@@ -112,9 +114,12 @@ class AbstractBotTest extends TestCase
     {
         $bot = $this->getBot(1, 1, 1);
 
-        $message = $this->getMockBuilder(Message::class)->getMock();
+        $message = $this->getMockBuilder(Message::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $update = $this->getMockBuilder(Update::class)
+            ->disableOriginalConstructor()
             ->getMock();
         $update->expects($this->exactly(2))
             ->method('getMessage')
@@ -135,9 +140,12 @@ class AbstractBotTest extends TestCase
     {
         $bot = $this->getBot(0, 1, 1);
 
-        $message = $this->getMockBuilder(Message::class)->getMock();
+        $message = $this->getMockBuilder(Message::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $update = $this->getMockBuilder(Update::class)
+            ->disableOriginalConstructor()
             ->getMock();
         $update->expects($this->exactly(2))
             ->method('getMessage')
@@ -154,6 +162,7 @@ class AbstractBotTest extends TestCase
         $bot = $this->getBot(1, 1, 1);
 
         $update = $this->getMockBuilder(Update::class)
+            ->disableOriginalConstructor()
             ->getMock();
         $update->expects($this->once())
             ->method('getMessage')
@@ -170,6 +179,7 @@ class AbstractBotTest extends TestCase
         $bot = $this->getBot(0, 1, 1);
 
         $update = $this->getMockBuilder(Update::class)
+            ->disableOriginalConstructor()
             ->getMock();
         $update->expects($this->once())
             ->method('getMessage')
@@ -197,6 +207,7 @@ class AbstractBotTest extends TestCase
         $bot = $this->getBot(1,1,1);
 
         $user = $this->getMockBuilder(User::class)
+            ->disableOriginalConstructor()
             ->getMock();
 
         $this->botApi->expects($this->once())
@@ -215,6 +226,7 @@ class AbstractBotTest extends TestCase
         $bot = $this->getBot(1,0,1);
 
         $message = $this->getMockBuilder(Message::class)
+            ->disableOriginalConstructor()
             ->getMock();
 
         $this->botApi->expects($this->never())
@@ -228,6 +240,7 @@ class AbstractBotTest extends TestCase
         $bot = $this->getBot(1,1,1);
 
         $message = $this->getMockBuilder(Message::class)
+            ->disableOriginalConstructor()
             ->getMock();
 
         $this->botApi->expects($this->once())

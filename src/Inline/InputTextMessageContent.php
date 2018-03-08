@@ -33,6 +33,20 @@ class InputTextMessageContent extends Object
     private $disable_web_page_preview;
 
     /**
+     * InputTextMessageContent constructor.
+     *
+     * @param string $messageText
+     * @param string|null $parseMode
+     * @param bool|null $disableWebPagePreview
+     */
+    public function __construct(string $messageText, ?string $parseMode = null, ?bool $disableWebPagePreview = null)
+    {
+        $this->message_text = $messageText;
+        $this->parse_mode = $parseMode;
+        $this->disable_web_page_preview = $disableWebPagePreview;
+    }
+
+    /**
      * Text of the message to be sent, 1-4096 characters
      *
      * @return string
@@ -73,10 +87,13 @@ class InputTextMessageContent extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InputTextMessageContent();
-        $object->message_text = $data->message_text;
+        $object = new InputTextMessageContent(
+            $data->message_text
+        );
+
         $object->parse_mode = $data->parse_mode ?? null;
         $object->disable_web_page_preview = $data->disable_web_page_preview ?? null;
+
         return $object;
     }
 

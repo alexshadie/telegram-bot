@@ -47,6 +47,24 @@ class VideoNote extends Object
     private $file_size;
 
     /**
+     * VideoNote constructor.
+     *
+     * @param string $fileId
+     * @param int $length
+     * @param int $duration
+     * @param PhotoSize|null $thumb
+     * @param int|null $fileSize
+     */
+    public function __construct(string $fileId, int $length, int $duration, ?PhotoSize $thumb = null, ?int $fileSize = null)
+    {
+        $this->file_id = $fileId;
+        $this->length = $length;
+        $this->duration = $duration;
+        $this->thumb = $thumb;
+        $this->file_size = $fileSize;
+    }
+
+    /**
      * Unique identifier for this file
      *
      * @return string
@@ -106,12 +124,15 @@ class VideoNote extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new VideoNote();
-        $object->file_id = $data->file_id;
-        $object->length = $data->length;
-        $object->duration = $data->duration;
+        $object = new VideoNote(
+            $data->file_id,
+            $data->length,
+            $data->duration
+        );
+
         $object->thumb = PhotoSize::createFromObject($data->thumb ?? null);
         $object->file_size = $data->file_size ?? null;
+
         return $object;
     }
 

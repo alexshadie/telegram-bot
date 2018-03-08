@@ -73,6 +73,30 @@ class InlineQueryResultCachedVoice extends Object
     private $input_message_content;
 
     /**
+     * InlineQueryResultCachedVoice constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $voiceFileId
+     * @param string $title
+     * @param string|null $caption
+     * @param string|null $parseMode
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     */
+    public function __construct(string $type, string $id, string $voiceFileId, string $title, ?string $caption = null, ?string $parseMode = null, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->voice_file_id = $voiceFileId;
+        $this->title = $title;
+        $this->caption = $caption;
+        $this->parse_mode = $parseMode;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+    }
+
+    /**
      * Type of the result, must be voice
      *
      * @return string
@@ -163,15 +187,18 @@ class InlineQueryResultCachedVoice extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultCachedVoice();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->voice_file_id = $data->voice_file_id;
-        $object->title = $data->title;
+        $object = new InlineQueryResultCachedVoice(
+            $data->type,
+            $data->id,
+            $data->voice_file_id,
+            $data->title
+        );
+
         $object->caption = $data->caption ?? null;
         $object->parse_mode = $data->parse_mode ?? null;
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
+
         return $object;
     }
 

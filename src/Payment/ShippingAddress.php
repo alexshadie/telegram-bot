@@ -53,6 +53,26 @@ class ShippingAddress extends Object
     private $post_code;
 
     /**
+     * ShippingAddress constructor.
+     *
+     * @param string $countryCode
+     * @param string $state
+     * @param string $city
+     * @param string $streetLine1
+     * @param string $streetLine2
+     * @param string $postCode
+     */
+    public function __construct(string $countryCode, string $state, string $city, string $streetLine1, string $streetLine2, string $postCode)
+    {
+        $this->country_code = $countryCode;
+        $this->state = $state;
+        $this->city = $city;
+        $this->street_line1 = $streetLine1;
+        $this->street_line2 = $streetLine2;
+        $this->post_code = $postCode;
+    }
+
+    /**
      * ISO 3166-1 alpha-2 country code
      *
      * @return string
@@ -122,13 +142,16 @@ class ShippingAddress extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new ShippingAddress();
-        $object->country_code = $data->country_code;
-        $object->state = $data->state;
-        $object->city = $data->city;
-        $object->street_line1 = $data->street_line1;
-        $object->street_line2 = $data->street_line2;
-        $object->post_code = $data->post_code;
+        $object = new ShippingAddress(
+            $data->country_code,
+            $data->state,
+            $data->city,
+            $data->street_line1,
+            $data->street_line2,
+            $data->post_code
+        );
+
+
         return $object;
     }
 

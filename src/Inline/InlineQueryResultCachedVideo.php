@@ -78,6 +78,32 @@ class InlineQueryResultCachedVideo extends Object
     private $input_message_content;
 
     /**
+     * InlineQueryResultCachedVideo constructor.
+     *
+     * @param string $type
+     * @param string $id
+     * @param string $videoFileId
+     * @param string $title
+     * @param string|null $description
+     * @param string|null $caption
+     * @param string|null $parseMode
+     * @param InlineKeyboardMarkup|null $replyMarkup
+     * @param InputMessageContent|null $inputMessageContent
+     */
+    public function __construct(string $type, string $id, string $videoFileId, string $title, ?string $description = null, ?string $caption = null, ?string $parseMode = null, ?InlineKeyboardMarkup $replyMarkup = null, ?InputMessageContent $inputMessageContent = null)
+    {
+        $this->type = $type;
+        $this->id = $id;
+        $this->video_file_id = $videoFileId;
+        $this->title = $title;
+        $this->description = $description;
+        $this->caption = $caption;
+        $this->parse_mode = $parseMode;
+        $this->reply_markup = $replyMarkup;
+        $this->input_message_content = $inputMessageContent;
+    }
+
+    /**
      * Type of the result, must be video
      *
      * @return string
@@ -178,16 +204,19 @@ class InlineQueryResultCachedVideo extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResultCachedVideo();
-        $object->type = $data->type;
-        $object->id = $data->id;
-        $object->video_file_id = $data->video_file_id;
-        $object->title = $data->title;
+        $object = new InlineQueryResultCachedVideo(
+            $data->type,
+            $data->id,
+            $data->video_file_id,
+            $data->title
+        );
+
         $object->description = $data->description ?? null;
         $object->caption = $data->caption ?? null;
         $object->parse_mode = $data->parse_mode ?? null;
         $object->reply_markup = InlineKeyboardMarkup::createFromObject($data->reply_markup ?? null);
         $object->input_message_content = InputMessageContent::createFromObject($data->input_message_content ?? null);
+
         return $object;
     }
 

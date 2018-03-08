@@ -54,6 +54,14 @@ use alexshadie\TelegramBot\Objects\Object;
 class InlineQueryResult extends Object
 {
     /**
+     * InlineQueryResult constructor.
+     *
+     */
+    public function __construct()
+    {
+    }
+
+    /**
       * Creates InlineQueryResult object from data.
       * @param \stdClass $data
       * @return InlineQueryResult
@@ -63,7 +71,11 @@ class InlineQueryResult extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new InlineQueryResult();
+        $object = new InlineQueryResult(
+            
+        );
+
+
         return $object;
     }
 

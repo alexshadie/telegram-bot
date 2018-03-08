@@ -98,6 +98,28 @@ class PreCheckoutQuery extends Object
     private $order_info;
 
     /**
+     * PreCheckoutQuery constructor.
+     *
+     * @param string $id
+     * @param User $from
+     * @param string $currency
+     * @param int $totalAmount
+     * @param string $invoicePayload
+     * @param string|null $shippingOptionId
+     * @param OrderInfo|null $orderInfo
+     */
+    public function __construct(string $id, User $from, string $currency, int $totalAmount, string $invoicePayload, ?string $shippingOptionId = null, ?OrderInfo $orderInfo = null)
+    {
+        $this->id = $id;
+        $this->from = $from;
+        $this->currency = $currency;
+        $this->total_amount = $totalAmount;
+        $this->invoice_payload = $invoicePayload;
+        $this->shipping_option_id = $shippingOptionId;
+        $this->order_info = $orderInfo;
+    }
+
+    /**
      * Unique query identifier
      *
      * @return string
@@ -179,14 +201,17 @@ class PreCheckoutQuery extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new PreCheckoutQuery();
-        $object->id = $data->id;
-        $object->from = User::createFromObject($data->from);
-        $object->currency = $data->currency;
-        $object->total_amount = $data->total_amount;
-        $object->invoice_payload = $data->invoice_payload;
+        $object = new PreCheckoutQuery(
+            $data->id,
+            User::createFromObject($data->from),
+            $data->currency,
+            $data->total_amount,
+            $data->invoice_payload
+        );
+
         $object->shipping_option_id = $data->shipping_option_id ?? null;
         $object->order_info = OrderInfo::createFromObject($data->order_info ?? null);
+
         return $object;
     }
 

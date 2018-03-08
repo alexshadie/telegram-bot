@@ -37,6 +37,20 @@ class KeyboardButton extends Object
     private $request_location;
 
     /**
+     * KeyboardButton constructor.
+     *
+     * @param string $text
+     * @param bool|null $requestContact
+     * @param bool|null $requestLocation
+     */
+    public function __construct(string $text, ?bool $requestContact = null, ?bool $requestLocation = null)
+    {
+        $this->text = $text;
+        $this->request_contact = $requestContact;
+        $this->request_location = $requestLocation;
+    }
+
+    /**
      * Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed
      *
      * @return string
@@ -77,10 +91,13 @@ class KeyboardButton extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new KeyboardButton();
-        $object->text = $data->text;
+        $object = new KeyboardButton(
+            $data->text
+        );
+
         $object->request_contact = $data->request_contact ?? null;
         $object->request_location = $data->request_location ?? null;
+
         return $object;
     }
 

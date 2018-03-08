@@ -40,6 +40,22 @@ class Venue extends Object
     private $foursquare_id;
 
     /**
+     * Venue constructor.
+     *
+     * @param Location $location
+     * @param string $title
+     * @param string $address
+     * @param string|null $foursquareId
+     */
+    public function __construct(Location $location, string $title, string $address, ?string $foursquareId = null)
+    {
+        $this->location = $location;
+        $this->title = $title;
+        $this->address = $address;
+        $this->foursquare_id = $foursquareId;
+    }
+
+    /**
      * Venue location
      *
      * @return Location
@@ -89,11 +105,14 @@ class Venue extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new Venue();
-        $object->location = Location::createFromObject($data->location);
-        $object->title = $data->title;
-        $object->address = $data->address;
+        $object = new Venue(
+            Location::createFromObject($data->location),
+            $data->title,
+            $data->address
+        );
+
         $object->foursquare_id = $data->foursquare_id ?? null;
+
         return $object;
     }
 

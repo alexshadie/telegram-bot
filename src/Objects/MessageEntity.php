@@ -47,6 +47,24 @@ class MessageEntity extends Object
     private $user;
 
     /**
+     * MessageEntity constructor.
+     *
+     * @param string $type
+     * @param int $offset
+     * @param int $length
+     * @param string|null $url
+     * @param User|null $user
+     */
+    public function __construct(string $type, int $offset, int $length, ?string $url = null, ?User $user = null)
+    {
+        $this->type = $type;
+        $this->offset = $offset;
+        $this->length = $length;
+        $this->url = $url;
+        $this->user = $user;
+    }
+
+    /**
      * Type of the entity. Can be mention (@username), hashtag, bot_command, url, email, bold (bold text), italic (italic
      * text), code (monowidth string), pre (monowidth block), text_link (for clickable text URLs), text_mention (for users
      * without usernames)
@@ -108,12 +126,15 @@ class MessageEntity extends Object
         if (is_null($data)) {
             return null;
         }
-        $object = new MessageEntity();
-        $object->type = $data->type;
-        $object->offset = $data->offset;
-        $object->length = $data->length;
+        $object = new MessageEntity(
+            $data->type,
+            $data->offset,
+            $data->length
+        );
+
         $object->url = $data->url ?? null;
         $object->user = User::createFromObject($data->user ?? null);
+
         return $object;
     }
 
