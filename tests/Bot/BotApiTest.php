@@ -53,6 +53,10 @@ class BotApiTest extends TestCase
         $message = new \stdClass();
         $message->result = new \stdClass();
         $message->result->message_id = 12345;
+        $message->result->date = 100500;
+        $message->result->chat = new \stdClass();
+        $message->result->chat->id = 101;
+        $message->result->chat->type = "private";
 
         $this->botApi->expects($this->once())
             ->method('query')
@@ -69,6 +73,7 @@ class BotApiTest extends TestCase
         $user->result = new \stdClass();
         $user->result->id = 123;
         $user->result->is_bot = true;
+        $user->result->first_name = "first";
 
         $this->botApi->expects($this->once())
             ->method('query')
@@ -78,7 +83,7 @@ class BotApiTest extends TestCase
         $responseUser = $this->botApi->getMe();
 
         $this->assertEquals(123, $responseUser->getId());
-        $this->assertEquals(true, $responseUser->isBot());
+        $this->assertEquals(true, $responseUser->getIsBot());
     }
 
     public function testGetFile()
@@ -99,7 +104,7 @@ class BotApiTest extends TestCase
 
     public function testDownloadFile()
     {
-        $this->markTestIncomplete();
+        $this->markTestSkipped();
         // TODO: Test file download
     }
 
@@ -145,6 +150,6 @@ class BotApiTest extends TestCase
 
     public function testGetUpdates()
     {
-
+        $this->markTestSkipped();
     }
 }

@@ -93,6 +93,17 @@ class ApiDocDefinitionsParser
                     $this->fullFiles[$block->getName()] ?? realpath(__DIR__ . "/../Misc/") . "/{$block->getName()}.php",
                     $fileContents
                 );
+
+                $testFilename = str_replace("/src/", "/tests/", $this->fullFiles[$block->getName()] ?? realpath(__DIR__ . "/../Misc/") . "/{$block->getName()}.php");
+                $testDirName = preg_replace('!/[a-z0-9]+\.php$!i', '/', $testFilename);
+
+                if (!is_dir($testDirName)) {
+                    mkdir($testDirName, 0755, true);
+                }
+                file_put_contents(
+                    $testFilename,
+                    $testFileContents
+                );
             }
         }
     }
@@ -179,7 +190,11 @@ class ApiDocDefinitionsParser
             $file = "Misc/" . $block->getName();
         }
 
-        $classInfo = ['name' => $block->getName(), 'fields' => []];
+        $classInfo = [
+            'ns' => "alexshadie\\TelegramBot\\" . str_replace(["/", "\\".$block->getName() . ".php"], ["\\", ""], $file),
+            'name' => $block->getName(),
+            'props' => []
+        ];
 
         $header = [];
         $use = [];
@@ -236,8 +251,24 @@ class ApiDocDefinitionsParser
 
         if ($block->getArgs()) {
             foreach ($block->getArgs() as $property) {
+                $propInfo = [
+                    'name' => $property['name'],
+                    'uCcName' => $this->underscoreToCamelCase($property['name']),
+                    'lCcName' => $this->underscoreToCamelCase($property['name'], true),
+                    'type' => $property['type'],
+                    'isCore' => $this->getCoreType($property['type']),
+                    'phpDocType' => $this->getDocType($property['type']) . ($property['optional'] ? "|null" : ""),
+                    'nsType' => $this->getNsType($property['type']),
+                    'ns' => $this->getNamespace($this->getNsType($property['type'])),
+                    'retType' => ($property['optional'] ? "?" : "") . $this->getRetType($property['type']),
+                    'optional' => $property['optional'],
+                ];
+
+                $classInfo['props'][] = $propInfo;
+
                 $props[] = "    /**";
                 $getters[] = "    /**";
+
                 $desc = explode("\n", $property['description']);
                 foreach ($desc as $lines) {
                     foreach ($this->splitLineByChunks($lines, 117) as $line) {
@@ -247,40 +278,38 @@ class ApiDocDefinitionsParser
                     $props[] = "     *";
                     $getters[] = "     *";
                 }
-                $props[] = "     * @var " . $this->getDocType($property['type']) . ($property['optional'] ? "|null" : "");
-                $getters[] = "     * @return " . $this->getDocType($property['type']) . ($property['optional'] ? "|null" : "");
-                if (!$this->getCoreType($property['type']) && $this->getNsType($property['type']) != $block->getName()) {
-                    $ns = $this->getNamespace($this->getNsType($property['type']));
 
+                $props[] = "     * @var " . $propInfo['phpDocType'];
+                $getters[] = "     * @return " . $propInfo['phpDocType'];
+
+                if (!$propInfo['isCore'] && $propInfo['nsType'] != $block->getName()) {
                     // Same namespace - do not include
-                    if (strpos($ns, $thisns) === 0 && strpos(str_replace($thisns . "\\", "", $ns), "\\") === false) {
+                    if (strpos($propInfo['ns'], $thisns) === 0 && strpos(str_replace($thisns . "\\", "", $propInfo['ns']), "\\") === false) {
 
                     } else {
-                        $use[$this->getNsType($property['type'])] = "use " . $this->getNamespace($this->getNsType($property['type'])) . ";";
+                        $use[$propInfo['nsType']] = "use {$propInfo['ns']};";
                     }
                 }
                 $props[] = "     */";
                 $getters[] = "     */";
-                $props[] = "    private \${$property['name']};";
+                $props[] = "    private \${$propInfo['name']};";
                 $props[] = "";
-                $getters[] = "    public function get" . $this->underscoreToCamelCase($property['name']) . "(): " . ($property['optional'] ? "?" : "") . $this->getRetType($property['type']);
+                $getters[] = "    public function get{$propInfo['uCcName']}(): {$propInfo['retType']}";
                 $getters[] = "    {";
-                $getters[] = "        return \$this->{$property['name']};";
+                $getters[] = "        return \$this->{$propInfo['name']};";
                 $getters[] = "    }";
                 $getters[] = "";
 
-                $ctorArgs[] =
-                    ($property['optional'] ? "?" : "") . $this->getRetType($property['type']) . " " .
-                    "\${$this->underscoreToCamelCase($property['name'], true)}";
+                $ctorArgs[] = "{$propInfo['retType']} \${$propInfo['lCcName']}";
 
-                $ctorDoc[] = "     * @param \$" . $this->underscoreToCamelCase($property['name'], true) . " " . $this->getDocType($property['type']) . ($property['optional'] ? "|null" : "");
+                $ctorDoc[] = "     * @param \${$propInfo['lCcName']} {$propInfo['phpDocType']}";
 
-                $ctorBody[] = "        \$this->" . $property['name'] . " = \${$this->underscoreToCamelCase($property['name'], true)};";
+                $ctorBody[] = "        \$this->{$propInfo['name']} = \${$propInfo['lCcName']};";
 
-                if ($this->getCoreType($property['type'])) {
-                    $create[] = "        \$object->" . $property['name'] . " = \$data->" . $property['name'] . ($property['optional'] ? " ?? null" : "") . ";";
+                if ($propInfo['isCore']) {
+                    $create[] = "        \$object->{$propInfo['name']} = \$data->{$propInfo['name']}" . ($propInfo['optional'] ? " ?? null" : "") . ";";
                 } else {
-                    $create[] = "        \$object->" . $property['name'] . " = " . $this->getNsType($property['type']) . "::createFromObject(\$data->" . $property['name'] . ($property['optional'] ? " ?? null" : "") . ");";
+                    $create[] = "        \$object->{$propInfo['name']} = {$propInfo['nsType']}::createFromObject(\$data->{$propInfo['name']}" . ($propInfo['optional'] ? " ?? null" : "") . ");";
                 }
             }
         }
@@ -327,6 +356,7 @@ class ApiDocDefinitionsParser
             $create
         );
 
+        $use["Object"] = "use PHPUnit\Framework\TestCase;";
         $testContent = array_merge(
             $header,
             $use,
