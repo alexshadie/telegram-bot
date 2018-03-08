@@ -3,125 +3,127 @@
 namespace alexshadie\TelegramBot\Query;
 
 use alexshadie\TelegramBot\Objects\Object;
+use alexshadie\TelegramBot\Inline\InlineQuery;
+use alexshadie\TelegramBot\Inline\ChosenInlineResult;
+use alexshadie\TelegramBot\Payment\ShippingQuery;
+use alexshadie\TelegramBot\Payment\PreCheckoutQuery;
 
 /**
- * Этот объект представляет из себя входящее обновление. Под обновлением подразумевается действие,
- * совершённое с ботом — например, получение сообщения от пользователя.
+ * This object represents an incoming update.
  *
- * Только один из необязательных параметров может присутствовать в каждом обновлении.
- * @package telegram
+ * At most one of the optional parameters can be present in any given update.
+ *
  */
 class Update extends Object
 {
     /**
      * The update‘s unique identifier. Update identifiers start from a certain positive number and increase sequentially.
      * This ID becomes especially handy if you’re using Webhooks, since it allows you to ignore repeated updates or to
-     * restore the correct update sequence, should they get out of order.
+     * restore the correct update sequence, should they get out of order. If there are no new updates for at least a week,
+     * then identifier of the next update will be chosen randomly instead of sequentially.
+     *
      * @var int
      */
     private $update_id;
+
     /**
      * New incoming message of any kind — text, photo, sticker, etc.
+     *
      * @var Message|null
      */
     private $message;
+
+    /**
+     * New version of a message that is known to the bot and was edited
+     *
+     * @var Message|null
+     */
+    private $edited_message;
+
+    /**
+     * New incoming channel post of any kind — text, photo, sticker, etc.
+     *
+     * @var Message|null
+     */
+    private $channel_post;
+
+    /**
+     * New version of a channel post that is known to the bot and was edited
+     *
+     * @var Message|null
+     */
+    private $edited_channel_post;
+
     /**
      * New incoming inline query
+     *
      * @var InlineQuery|null
      */
     private $inline_query;
+
     /**
-     * The result of an inline query that was chosen by a user and sent to their chat partner.
+     * The result of an inline query that was chosen by a user and sent to their chat partner. Please see our documentation
+     * on the feedback collecting for details on how to enable these updates for your bot.
+     *
      * @var ChosenInlineResult|null
      */
     private $chosen_inline_result;
+
     /**
      * New incoming callback query
+     *
      * @var CallbackQuery|null
      */
     private $callback_query;
 
     /**
-     * @param $data
-     * @return Update[]|null
+     * New incoming shipping query. Only for invoices with flexible price
+     *
+     * @var ShippingQuery|null
      */
-    public static function createFromObjectList($data)
+    private $shipping_query;
+
+    /**
+     * New incoming pre-checkout query. Contains full information about checkout
+     *
+     * @var PreCheckoutQuery|null
+     */
+    private $pre_checkout_query;
+
+    /**
+     * Update constructor.
+     *
+     * @param int $updateId
+     * @param Message|null $message
+     * @param Message|null $editedMessage
+     * @param Message|null $channelPost
+     * @param Message|null $editedChannelPost
+     * @param InlineQuery|null $inlineQuery
+     * @param ChosenInlineResult|null $chosenInlineResult
+     * @param CallbackQuery|null $callbackQuery
+     * @param ShippingQuery|null $shippingQuery
+     * @param PreCheckoutQuery|null $preCheckoutQuery
+     */
+    public function __construct(int $updateId, ?Message $message = null, ?Message $editedMessage = null, ?Message $channelPost = null, ?Message $editedChannelPost = null, ?InlineQuery $inlineQuery = null, ?ChosenInlineResult $chosenInlineResult = null, ?CallbackQuery $callbackQuery = null, ?ShippingQuery $shippingQuery = null, ?PreCheckoutQuery $preCheckoutQuery = null)
     {
-        if (is_null($data)) {
-            return null;
-        }
-        $updates = [];
-        foreach ($data as $row) {
-            $updates[] = self::createFromObject($row);
-        }
-        return $updates;
+        $this->update_id = $updateId;
+        $this->message = $message;
+        $this->edited_message = $editedMessage;
+        $this->channel_post = $channelPost;
+        $this->edited_channel_post = $editedChannelPost;
+        $this->inline_query = $inlineQuery;
+        $this->chosen_inline_result = $chosenInlineResult;
+        $this->callback_query = $callbackQuery;
+        $this->shipping_query = $shippingQuery;
+        $this->pre_checkout_query = $preCheckoutQuery;
     }
 
     /**
-     * @param $data
-     * @return Update|null
-     */
-    public static function createFromObject($data)
-    {
-        if (is_null($data)) {
-            return null;
-        }
-        $update = new Update();
-        $update->update_id = $data->update_id;
-        $update->message = Message::createFromObject($data->message ?? null);
-        /*
-object(stdClass)#32 (2) {
-  ["update_id"]=>
-  int(655017557)
-  ["edited_message"]=>
-  object(stdClass)#33 (6) {
-    ["message_id"]=>
-    int(94)
-    ["from"]=>
-    object(stdClass)#34 (6) {
-      ["id"]=>
-      int(258500651)
-      ["is_bot"]=>
-      bool(false)
-      ["first_name"]=>
-      string(4) "Alex"
-      ["last_name"]=>
-      string(6) "Shadie"
-      ["username"]=>
-      string(10) "alexshadie"
-      ["language_code"]=>
-      string(5) "en-US"
-    }
-    ["chat"]=>
-    object(stdClass)#35 (5) {
-      ["id"]=>
-      int(258500651)
-      ["first_name"]=>
-      string(4) "Alex"
-      ["last_name"]=>
-      string(6) "Shadie"
-      ["username"]=>
-      string(10) "alexshadie"
-      ["type"]=>
-      string(7) "private"
-    }
-    ["date"]=>
-    int(1517083670)
-    ["edit_date"]=>
-    int(1517083678)
-    ["text"]=>
-    string(16) "contractor: test"
-  }
-}
-         */
-//        $update->edited_message = null;// EditedMessage
-        $update->inline_query = null;//InlineQuery::createFromObject($data->inline_query);
-        $update->chosen_inline_result = null;//ChosenInlineResult::createFromObject($data->chosen_inline_result);
-        $update->callback_query = null;//CallbackQuery::createFromObject($data->callback_query);
-        return $update;
-    }
-
-    /**
+     * The update‘s unique identifier. Update identifiers start from a certain positive number and increase sequentially.
+     * This ID becomes especially handy if you’re using Webhooks, since it allows you to ignore repeated updates or to
+     * restore the correct update sequence, should they get out of order. If there are no new updates for at least a week,
+     * then identifier of the next update will be chosen randomly instead of sequentially.
+     *
      * @return int
      */
     public function getUpdateId(): int
@@ -130,34 +132,138 @@ object(stdClass)#32 (2) {
     }
 
     /**
+     * New incoming message of any kind — text, photo, sticker, etc.
+     *
      * @return Message|null
      */
-    public function getMessage()
+    public function getMessage(): ?Message
     {
         return $this->message;
     }
 
     /**
+     * New version of a message that is known to the bot and was edited
+     *
+     * @return Message|null
+     */
+    public function getEditedMessage(): ?Message
+    {
+        return $this->edited_message;
+    }
+
+    /**
+     * New incoming channel post of any kind — text, photo, sticker, etc.
+     *
+     * @return Message|null
+     */
+    public function getChannelPost(): ?Message
+    {
+        return $this->channel_post;
+    }
+
+    /**
+     * New version of a channel post that is known to the bot and was edited
+     *
+     * @return Message|null
+     */
+    public function getEditedChannelPost(): ?Message
+    {
+        return $this->edited_channel_post;
+    }
+
+    /**
+     * New incoming inline query
+     *
      * @return InlineQuery|null
      */
-    public function getInlineQuery()
+    public function getInlineQuery(): ?InlineQuery
     {
         return $this->inline_query;
     }
 
     /**
+     * The result of an inline query that was chosen by a user and sent to their chat partner. Please see our documentation
+     * on the feedback collecting for details on how to enable these updates for your bot.
+     *
      * @return ChosenInlineResult|null
      */
-    public function getChosenInlineResult()
+    public function getChosenInlineResult(): ?ChosenInlineResult
     {
         return $this->chosen_inline_result;
     }
 
     /**
+     * New incoming callback query
+     *
      * @return CallbackQuery|null
      */
-    public function getCallbackQuery()
+    public function getCallbackQuery(): ?CallbackQuery
     {
         return $this->callback_query;
     }
+
+    /**
+     * New incoming shipping query. Only for invoices with flexible price
+     *
+     * @return ShippingQuery|null
+     */
+    public function getShippingQuery(): ?ShippingQuery
+    {
+        return $this->shipping_query;
+    }
+
+    /**
+     * New incoming pre-checkout query. Contains full information about checkout
+     *
+     * @return PreCheckoutQuery|null
+     */
+    public function getPreCheckoutQuery(): ?PreCheckoutQuery
+    {
+        return $this->pre_checkout_query;
+    }
+
+    /**
+      * Creates Update object from data.
+      * @param \stdClass $data
+      * @return Update
+      */
+    public static function createFromObject(?\stdClass $data): ?Update
+    {
+        if (is_null($data)) {
+            return null;
+        }
+        $object = new Update(
+            $data->update_id
+        );
+
+        $object->message = Message::createFromObject($data->message ?? null);
+        $object->edited_message = Message::createFromObject($data->edited_message ?? null);
+        $object->channel_post = Message::createFromObject($data->channel_post ?? null);
+        $object->edited_channel_post = Message::createFromObject($data->edited_channel_post ?? null);
+        $object->inline_query = InlineQuery::createFromObject($data->inline_query ?? null);
+        $object->chosen_inline_result = ChosenInlineResult::createFromObject($data->chosen_inline_result ?? null);
+        $object->callback_query = CallbackQuery::createFromObject($data->callback_query ?? null);
+        $object->shipping_query = ShippingQuery::createFromObject($data->shipping_query ?? null);
+        $object->pre_checkout_query = PreCheckoutQuery::createFromObject($data->pre_checkout_query ?? null);
+
+        return $object;
+    }
+
+    /**
+      * Creates array of Update objects from data.
+      * @param array $data
+      * @return Update[]
+      */
+    public static function createFromObjectList(?array $data): ?array
+    {
+        if (is_null($data)) {
+            return null;
+        };
+        $objects = [];
+        foreach ($data as $row) {
+            $objects[] = static::createFromObject($row);
+        }
+        return $objects;
+    }
+
 }

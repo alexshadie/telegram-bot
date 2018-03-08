@@ -11,6 +11,7 @@ interface BotInterface
 {
     /**
      * Gets information about bot
+     *
      * @return User
      * @throws \ErrorException
      */
@@ -18,6 +19,7 @@ interface BotInterface
 
     /**
      * Update handler
+     *
      * @param Update $update
      * @return bool
      * @throws \ErrorException

@@ -15,19 +15,26 @@ class Object
     }
 
     /**
-     * @param $data
-     * @return Object
+     * @param \stdClass[] $data
+     * @return Object[]|null
      */
-    public static function createFromObjectList($data)
+    public static function createFromObjectList(array $data): ?array
     {
-        return null;
+        if (is_null($data)) {
+            return null;
+        }
+        $objects = [];
+        foreach ($data as $row) {
+            $objects[] = static::createFromObject($row);
+        }
+        return $objects;
     }
 
     /**
-     * @param $data
-     * @return Object
+     * @param \stdClass $data
+     * @return Object|null
      */
-    public static function createFromObject($data)
+    public static function createFromObject(\stdClass $data)
     {
         return null;
     }

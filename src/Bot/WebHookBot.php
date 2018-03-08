@@ -4,11 +4,17 @@ namespace alexshadie\TelegramBot\Bot;
 
 class WebHookBot extends AbstractBot
 {
-    /** @var string  */
+    /** @var string */
     private $endpoint;
     /** @var string */
     private $certificateFile;
 
+    /**
+     * WebHookBot constructor.
+     *
+     * @param string $endpoint
+     * @param string $certificateFile
+     */
     public function __construct(
         string $endpoint,
         string $certificateFile
@@ -19,20 +25,26 @@ class WebHookBot extends AbstractBot
     }
 
     /**
+     * Registers webhook
+     *
      * @return bool
      * @throws \ErrorException
      * @throws Exception\TelegramResponseException
      */
-    public function register() {
+    public function register()
+    {
         return $this->botApi->registerWebHook($this->endpoint, $this->certificateFile);
     }
 
     /**
+     * Unregisters webhook
+     *
      * @return bool
      * @throws \ErrorException
      * @throws Exception\TelegramResponseException
      */
-    public function unregister() {
+    public function unregister()
+    {
         return $this->botApi->dropWebHook();
     }
 }

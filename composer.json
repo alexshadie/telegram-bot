@@ -14,15 +14,17 @@
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-mbstring": "*",
-        "psr/log": "1.0.2"
+        "psr/log": "1.0.2",
+        "phpunit/phpunit": "^7.0"
     },
     "require-dev" : {
         "monolog/monolog": "^1.17",
-        "silex/silex": "^2.2"
+        "silex/silex": "^2.2",
+        "electrolinux/phpquery": "^0.9.6"
     },
     "autoload": {
         "psr-4": {
-            "alexshadie\\TelegramBot\\": "src/"
+            "alexshadie\\TelegramBot\\": ["src/", "tests/", "stubs/"]
         }
     }
 }
