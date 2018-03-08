@@ -86,7 +86,7 @@ class ApiDocDefinitionsParser
         foreach ($this->blocks as $block) {
             if ($block->getType() == 'object') {
                 echo $block->getName() . " - " . ($this->files[$block->getName()] ?? "no file") . "\n\n";
-                [$fileContents, $testFileContents] = $this->getFile($block, ($this->files[$block->getName()] ?? null));
+                [$fileContents, $testFileContents, $stubFileContents] = $this->getFile($block, ($this->files[$block->getName()] ?? null));
 //                echo $fileContents . "\n\n";
                 var_dump($this->fullFiles[$block->getName()] ?? realpath(__DIR__ . "/../Misc/") . "/{$block->getName()}.php");
                 file_put_contents(
@@ -94,16 +94,31 @@ class ApiDocDefinitionsParser
                     $fileContents
                 );
 
-                $testFilename = str_replace("/src/", "/tests/", $this->fullFiles[$block->getName()] ?? realpath(__DIR__ . "/../Misc/") . "/{$block->getName()}.php");
-                $testDirName = preg_replace('!/[a-z0-9]+\.php$!i', '/', $testFilename);
-
-                if (!is_dir($testDirName)) {
-                    mkdir($testDirName, 0755, true);
+                $stubFilename = str_replace("/src/", "/stubs/", $this->fullFiles[$block->getName()] ?? realpath(__DIR__ . "/../Misc/") . "/{$block->getName()}.php");
+                $stubFilename = str_replace(".php", "Stub.php", $stubFilename);
+                $stubDirName = preg_replace('!/[a-z0-9]+\.php$!i', '/', $stubFilename);
+                if (!is_dir($stubDirName)) {
+                    mkdir($stubDirName, 0755, true);
                 }
+
                 file_put_contents(
-                    $testFilename,
-                    $testFileContents
+                    $stubFilename,
+                    $stubFileContents
                 );
+
+                if ($testFileContents) {
+                    $testFilename = str_replace("/src/", "/tests/", $this->fullFiles[$block->getName()] ?? realpath(__DIR__ . "/../Misc/") . "/{$block->getName()}.php");
+                    $testFilename = str_replace(".php", "Test.php", $testFilename);
+                    $testDirName = preg_replace('!/[a-z0-9]+\.php$!i', '/', $testFilename);
+
+                    if (!is_dir($testDirName)) {
+                        mkdir($testDirName, 0755, true);
+                    }
+                    file_put_contents(
+                        $testFilename,
+                        $testFileContents
+                    );
+                }
             }
         }
     }
@@ -184,6 +199,163 @@ class ApiDocDefinitionsParser
         return $string;
     }
 
+    function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
+    private function randomValue($prop) {
+        if (!$prop['isCore']) {
+            if ($prop['isArray']) {
+                $parts = [];
+                for ($i = rand(1,3); $i > 0; $i--) {
+                    $rnd = rand(1,3);
+                    $parts[] = "{$prop['nsType']}Stub::get{$prop['nsType']}WithCommonFields{$rnd}()";
+                }
+                return "[" . join(', ', $parts) . "]";
+            } else {
+                $rnd = rand(1, 3);
+                return "{$prop['nsType']}Stub::get{$prop['nsType']}WithCommonFields{$rnd}()";
+            }
+        }
+        switch ($prop['nsType']) {
+            case "int":
+                return rand();
+            case "string":
+                return "'" . $this->generateRandomString() . "'";
+            case "bool":
+                return rand(0,1) ? 'true' : 'false';
+            case "float":
+                return rand() / 100.0;
+            case "string[]":
+                $parts = [];
+                for ($i = rand(1,3); $i > 0; $i--) {
+                    $parts[] = "'" . $this->generateRandomString() . "'";
+                }
+                return "[" . join(", ", $parts) . "]";
+            default:
+                die($prop['nsType']);
+        }
+    }
+
+    private function generateStubMethods($classInfo) {
+        $methods = [];
+        // 1. Generic values
+        for ($i = 1; $i <= 3; $i++) {
+            $methods[] = "    /**";
+            $methods[] = "     * @return {$classInfo['name']}";
+            $methods[] = "     */";
+
+            $methods[] = "    public static function get{$classInfo['name']}WithCommonFields{$i}(): {$classInfo['name']}";
+            $methods[] = "    {";
+
+            $methods[] = "        return new {$classInfo['name']}(";
+
+            $ctorArgs = [];
+
+            foreach ($classInfo['props'] as $prop) {
+                if (!$prop['optional']) {
+                    $ctorArgs[] = "            {$this->randomValue($prop)}";
+                }
+            }
+
+            $methods[] = join(",\n", $ctorArgs);
+
+            $methods[] = "        );";
+
+            $methods[] = "    }";
+        }
+
+        // 2. Extended
+        for ($i = 1; $i <= 3; $i++) {
+            $methods[] = "    /**";
+            $methods[] = "     * @return {$classInfo['name']}";
+            $methods[] = "     */";
+
+            $methods[] = "    public static function get{$classInfo['name']}WithAllFields{$i}(): {$classInfo['name']}";
+            $methods[] = "    {";
+
+            $methods[] = "        return new {$classInfo['name']}(";
+
+            $ctorArgs = ['req' => [], 'opt' => []];
+            $setters = [];
+
+            foreach ($classInfo['props'] as $prop) {
+                $ctorArgs[$prop['optional'] ? 'opt' : 'req'][] = "            {$this->randomValue($prop)}";
+            }
+
+            $methods[] = join(",\n", array_merge($ctorArgs['req'], $ctorArgs['opt']));
+
+            $methods[] = "        );";
+
+            $methods[] = "    }";
+        }
+        return $methods;
+    }
+
+    private function generateTestMethods($classInfo) {
+        if (!count($classInfo['props'])) {
+            return [];
+        }
+        $methods = [];
+        // 1. Generic values
+        $methods[] = "    public function testConstruct{$classInfo['name']}WithCommonFields()";
+        $methods[] = "    {";
+
+        $methods[] = "        \$obj = new {$classInfo['name']}(";
+
+        $ctorArgs = [];
+        $testLines = [];
+
+        foreach ($classInfo['props'] as $prop) {
+            if (!$prop['optional']) {
+                $rndVal = $this->randomValue($prop);
+                $ctorArgs[] = "            {$rndVal}";
+                $testLines[] = "        \$this->assertEquals({$rndVal}, \$obj->get{$prop['uCcName']}());";
+            } else {
+                $testLines[] = "        \$this->assertNull(\$obj->get{$prop['uCcName']}());";
+            }
+        }
+
+        $methods[] = join(",\n", $ctorArgs);
+
+        $methods[] = "        );";
+
+        $methods[] = join("\n", $testLines);
+
+        $methods[] = "    }";
+
+        // 2. Extended
+        $methods[] = "    public function testConstruct{$classInfo['name']}WithAllFields()";
+        $methods[] = "    {";
+
+        $methods[] = "        \$obj = new {$classInfo['name']}(";
+
+        $ctorArgs = ['req' => [], 'opt' => []];
+        $testLines = [];
+
+        foreach ($classInfo['props'] as $prop) {
+            $rndVal = $this->randomValue($prop);
+            $ctorArgs[$prop['optional'] ? 'opt' : 'req'][] = "            {$rndVal}";
+            $testLines[] = "        \$this->assertEquals({$rndVal}, \$obj->get{$prop['uCcName']}());";
+        }
+
+        $methods[] = join(",\n", array_merge($ctorArgs['req'], $ctorArgs['opt']));
+
+        $methods[] = "        );";
+
+        $methods[] = join("\n", $testLines);
+
+        $methods[] = "    }";
+
+        return $methods;
+    }
+
     public function getFile(ApiDocBlock $block, $file)
     {
         if (!$file) {
@@ -198,6 +370,7 @@ class ApiDocDefinitionsParser
 
         $header = [];
         $use = [];
+        $stubUse = [];
         $class = [];
         $props = [];
         $ctor = [];
@@ -209,6 +382,9 @@ class ApiDocDefinitionsParser
         $create = [];
         $createSet = [];
         $createCtor = [];
+
+        $stubClass = [];
+
 
         $testClass = [];
         $testMethods = [];
@@ -236,8 +412,14 @@ class ApiDocDefinitionsParser
         $class[] = "class {$block->getName()} extends Object";
         $class[] = "{";
 
-        $testClass[] = "class Test{$block->getName()} extends TestCase";
+        $testClass[] = "class {$block->getName()}Test extends TestCase";
         $testClass[] = "{";
+
+        $stubClass[] = "/**";
+        $stubClass[] = " * Stub for {$block->getName()} class. Use it for testing.";
+        $stubClass[] = " */";
+        $stubClass[] = "class {$block->getName()}Stub extends {$block->getName()}";
+        $stubClass[] = "{";
 
         $create[] = "    /**";
         $create[] = "      * Creates " . $block->getName() . " object from data.";
@@ -291,6 +473,7 @@ class ApiDocDefinitionsParser
 
                     } else {
                         $use[$propInfo['nsType']] = "use {$propInfo['ns']};";
+                        $stubUse[$propInfo['nsType']] = preg_replace('!([a-z0-9]+);$!i', '\\1Stub;', "use {$propInfo['ns']};");
                     }
                 }
                 $props[] = "     */";
@@ -329,7 +512,10 @@ class ApiDocDefinitionsParser
             }
         }
 
-        $use[] = "";
+        $stubMethods = $this->generateStubMethods($classInfo);
+
+        $testMethods = $this->generateTestMethods($classInfo);
+
         $create[] = "            " . implode(",\n            ", $createCtor);
         $create[] = "        );";
         $create[] = "";
@@ -368,6 +554,7 @@ class ApiDocDefinitionsParser
         $content = array_merge(
             $header,
             $use,
+            $stubUse ? [""] : [],
             $class,
             $props,
             $ctor,
@@ -376,22 +563,45 @@ class ApiDocDefinitionsParser
             $create
         );
 
-        $use["Object"] = "use PHPUnit\Framework\TestCase;";
-        $testContent = array_merge(
+        $stubContent = array_merge(
             $header,
-            $use,
-            $testClass
+            $stubUse,
+            $stubUse ? [""] : [],
+            $stubClass,
+            $stubMethods
         );
+
+        $use["Object"] = "use PHPUnit\Framework\TestCase;";
+
+        if ($testMethods) {
+            $testContent = array_merge(
+                $header,
+                array_values($use),
+                $stubUse,
+                $stubUse ? [""] : [],
+                $testClass,
+                $testMethods
+            );
+            $testContent[] = "}";
+            $testContent[] = "";
+        } else {
+            $testContent = [];
+        }
 
         $content[] = "}";
         $content[] = "";
 
-        $testContent[] = "}";
-        $testContent[] = "";
+        $stubContent[] = "}";
+        $stubContent[] = "";
+
+
+
+
 
         return [
             join("\n", $content),
-            join("\n", $testContent)
+            join("\n", $testContent),
+            join("\n", $stubContent)
         ];
     }
 
