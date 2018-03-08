@@ -9,5 +9,6 @@ $parser = new ApiDocDefinitionsParser();
 $parser->parse();
 $parser->loadFiles();
 
-$parser->buildObjectFiles();
+//$parser->buildObjectFiles();
+//$parser->buildApi();
 

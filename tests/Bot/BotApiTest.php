@@ -63,7 +63,7 @@ class BotApiTest extends TestCase
             ->with('sendMessage', ['chat_id' => 12345, 'text' => 'Test text'])
             ->willReturn($message);
 
-        $responseMessage = $this->botApi->message(12345, 'Test text');
+        $responseMessage = $this->botApi->sendMessage(12345, 'Test text');
         $this->assertEquals(12345, $responseMessage->getMessageId());
     }
 

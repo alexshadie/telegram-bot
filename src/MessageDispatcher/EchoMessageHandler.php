@@ -15,7 +15,7 @@ class EchoMessageHandler implements MessageHandler
 
     public function handle(Message $message, BotApi $botApi): void
     {
-        $botApi->message($message->getChat()->getId(), $message->getText());
+        $botApi->sendMessage($message->getChat()->getId(), $message->getText());
     }
 
     public function isTerminator(): bool

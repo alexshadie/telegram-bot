@@ -57,12 +57,12 @@ class ApiDocBlock
             $trs = $table->find("tr");
             for ($i = 1; $i < $trs->count(); $i++) {
                 $tds = pq($trs->get($i))->find('td');
-                $desc = trim(pq($tds->get(2))->html());
+                $desc = trim(pq($tds->get(3))->html());
                 $this->args[] = [
                     'name' => trim(pq($tds->get(0))->html()),
                     'type' => strip_tags(trim(pq($tds->get(1))->html())),
                     'description' => trim(strip_tags(str_replace('<em>Optional</em>.', '', $desc))),
-                    'optional' => trim(pq($tds->get(1))->html()) === 'Optional',
+                    'optional' => trim(pq($tds->get(2))->html()) === 'Optional',
                 ];
             }
         }

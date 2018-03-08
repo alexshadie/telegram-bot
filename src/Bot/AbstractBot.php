@@ -130,6 +130,6 @@ abstract class AbstractBot implements BotInterface
         if (is_null($this->botApi)) {
             throw new BotException("Invalid bot configuration");
         }
-        return $this->botApi->message($chatId, $message);
+        return $this->botApi->sendMessage($chatId, $message);
     }
 }

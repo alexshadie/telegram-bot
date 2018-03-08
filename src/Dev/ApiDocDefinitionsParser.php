@@ -126,15 +126,19 @@ class ApiDocDefinitionsParser
     public function splitLineByChunks($line, $maxlen = 120)
     {
         $result = [];
-        while (strlen($line) > $maxlen) {
-            for ($i = $maxlen; $line[$i] != " " && $i > 0; $i--);
+        $lines = explode("\n", $line);
 
-            if ($i > 0) {
-                $result[] = substr($line, 0, $i);
-                $line = substr($line, $i + 1);
+        foreach ($lines as $line) {
+            while (strlen($line) > $maxlen) {
+                for ($i = $maxlen; $line[$i] != " " && $i > 0; $i--) ;
+
+                if ($i > 0) {
+                    $result[] = substr($line, 0, $i);
+                    $line = substr($line, $i + 1);
+                }
             }
+            $result[] = $line;
         }
-        $result[] = $line;
         return $result;
     }
 
@@ -589,10 +593,6 @@ class ApiDocDefinitionsParser
         $stubContent[] = "}";
         $stubContent[] = "";
 
-
-
-
-
         return [
             join("\n", $content),
             join("\n", $testContent),
@@ -600,4 +600,108 @@ class ApiDocDefinitionsParser
         ];
     }
 
+    public function buildApi() {
+        $methods = [];
+        $dd = 0;
+        $methodsText = [];
+        foreach ($this->blocks as $block) {
+            if ($block->getType() == 'method') {
+
+                $docBlockArgs = [];
+                $methodBody = [];
+                $methods = [];
+
+                $methodInfo = [
+                    'name' => $block->getName(),
+                    'retIsArray' => $block->getReturnIsArray(),
+                    'retType' => $block->getReturnType(),
+                ];
+
+//                var_dump($block);
+
+                $docBlockArgs[] = "    /**";
+                foreach ($this->splitLineByChunks($block->getDescription(), 117) as $line) {
+                    $docBlockArgs[] = "     * " . $line;
+                }
+                $docBlockArgs[] = "     *";
+
+                $methodBody = [];
+                $methodArgs = [];
+                $paramsArray = [];
+                $paramsArray[] = "        \$params = [";
+
+                foreach ($block->getArgs() ?? [] as $arg) {
+                    $paramDocs = [];
+
+                    $paramDoc = "@param " . $this->getDocType($arg['type']) . " \$" . $this->underscoreToCamelCase($arg['name'], true) . " ";
+
+                    foreach ($this->splitLineByChunks($arg['description'], 113) as $line) {
+                        $paramDocs[] = "    " . $line;
+                    }
+                    $paramDocs[0] = $paramDoc . " " . $paramDocs[0];
+                    for ($i = 0; $i < count($paramDocs); $i++) {
+                        $paramDocs[$i] = "     * " . $paramDocs[$i];
+                    }
+
+
+                    $docBlockArgs = array_merge($docBlockArgs, $paramDocs);
+
+                    $methodArgs[] = ($arg['optional'] ? '?' : '') . $this->getRetType($arg['type']) . " \$" . $this->underscoreToCamelCase($arg['name'], true) .
+                        ($arg['optional'] ? " = null" : "");
+
+                    $paramsArray[] = "            '{$arg['name']}' => \$" . $this->underscoreToCamelCase($arg['name'], true) . ",";
+                }
+
+                $paramsArray[] = "        ];";
+
+                $docBlockArgs[] = "     * @return {$block->getReturnType()}" . ($block->getReturnIsArray() ? "[]" : "");
+                $docBlockArgs[] = "     */";
+
+
+                $methods[] = "    public function " . $this->underscoreToCamelCase($block->getName(), 1) . "(" . join(', ', $methodArgs) . "): " .
+                    ($block->getReturnIsArray() ? "array" : $block->getReturnType());
+                $methods[] = "    {";
+
+                $methodBody[] = "        \$data = \$this->query('{$block->getName()}', \$params);";
+
+                if ($this->getCoreType($block->getReturnType())) {
+                    $methodBody[] = "return \$data->result;";
+                } else {
+                    if ($block->getReturnIsArray()) {
+                        $methodBody[] = "        return {$block->getReturnType()}::createFromObjectList(\$data->result);";
+                    } else {
+                        $methodBody[] = "        return {$block->getReturnType()}::createFromObject(\$data->result);";
+                    }
+                }
+
+                $methods = array_merge($methods, $paramsArray);
+                $methods = array_merge($methods, $methodBody);
+
+                $methods[] = "    }";
+                $methods[] = "";
+
+
+                $methodsText = array_merge(
+                    $methodsText,
+                    $docBlockArgs,
+                    $methods
+                );
+            }
+
+            $content = [];
+
+            $content[] = "class BotApi implements BotApiInterface";
+            $content[] = "{";
+
+            $content = array_merge($content, $methodsText);
+            $content[] = "}";
+
+
+            $apiText = join("\n", $content);
+
+            file_put_contents(__DIR__ . "/../Bot/BotApi.php", $apiText);
+        }
+
+
+    }
 }
