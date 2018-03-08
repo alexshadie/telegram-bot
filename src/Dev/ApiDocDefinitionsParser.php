@@ -283,7 +283,6 @@ class ApiDocDefinitionsParser
             $methods[] = "        return new {$classInfo['name']}(";
 
             $ctorArgs = ['req' => [], 'opt' => []];
-            $setters = [];
 
             foreach ($classInfo['props'] as $prop) {
                 $ctorArgs[$prop['optional'] ? 'opt' : 'req'][] = "            {$this->randomValue($prop)}";
@@ -329,6 +328,7 @@ class ApiDocDefinitionsParser
         $methods[] = join("\n", $testLines);
 
         $methods[] = "    }";
+        $methods[] = "";
 
         // 2. Extended
         $methods[] = "    public function testConstruct{$classInfo['name']}WithAllFields()";
@@ -368,12 +368,10 @@ class ApiDocDefinitionsParser
             'props' => []
         ];
 
-        $header = [];
         $use = [];
         $stubUse = [];
         $class = [];
         $props = [];
-        $ctor = [];
         $ctorDoc = [];
         $ctorArgs = ['req' => [], 'opt' => []];
         $ctorBody = [];
@@ -385,9 +383,7 @@ class ApiDocDefinitionsParser
 
         $stubClass = [];
 
-
         $testClass = [];
-        $testMethods = [];
 
 
         $thisns = "alexshadie\\TelegramBot\\" . str_replace(["/", "\\".$block->getName() . ".php"], ["\\", ""], $file);
@@ -554,7 +550,7 @@ class ApiDocDefinitionsParser
         $content = array_merge(
             $header,
             $use,
-            $stubUse ? [""] : [],
+            $use ? [""] : [],
             $class,
             $props,
             $ctor,
@@ -566,17 +562,16 @@ class ApiDocDefinitionsParser
         $stubContent = array_merge(
             $header,
             $stubUse,
-            $stubUse ? [""] : [],
+            [""],
             $stubClass,
             $stubMethods
         );
 
-        $use["Object"] = "use PHPUnit\Framework\TestCase;";
-
         if ($testMethods) {
             $testContent = array_merge(
                 $header,
-                array_values($use),
+                ["use PHPUnit\Framework\TestCase;"],
+//                array_values($use),
                 $stubUse,
                 $stubUse ? [""] : [],
                 $testClass,

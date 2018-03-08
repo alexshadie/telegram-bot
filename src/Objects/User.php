@@ -2,7 +2,6 @@
 
 namespace alexshadie\TelegramBot\Objects;
 
-
 /**
  * This object represents a Telegram user or bot.
  *

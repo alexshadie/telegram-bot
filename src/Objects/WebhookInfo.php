@@ -2,7 +2,6 @@
 
 namespace alexshadie\TelegramBot\Objects;
 
-
 /**
  * Contains information about the current status of a webhook.
  *
