@@ -26,6 +26,11 @@ class MessageDispatcher implements MessageDispatcherInterface
         // Perform setup operations for each handler, e.g. dependency injections and so on
     }
 
+    protected function beforeDispatch(Message $message): void
+    {
+        // Performs pre-dispatch initialization
+    }
+
     public function addHandler(MessageHandler $handler, int $priority = 100): void
     {
         if (!isset($this->handlers[$priority])) {
@@ -38,6 +43,7 @@ class MessageDispatcher implements MessageDispatcherInterface
 
     public function dispatch(Message $message): void
     {
+        $this->beforeDispatch($message);
         foreach ($this->handlers as $handlerList) {
             foreach ($handlerList as $handler) {
                 if ($handler->isSuitable($message)) {
