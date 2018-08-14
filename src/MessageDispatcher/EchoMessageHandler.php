@@ -13,6 +13,11 @@ class EchoMessageHandler implements MessageHandler
         return !is_null($message->getText());
     }
 
+    public function beforeHandle(Message $message): void
+    {
+
+    }
+
     public function handle(Message $message, BotApi $botApi): void
     {
         $botApi->sendMessage($message->getChat()->getId(), $message->getText());

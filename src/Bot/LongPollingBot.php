@@ -48,7 +48,7 @@ class LongPollingBot extends AbstractBot
      */
     public function getNewUpdates(): UpdateBatch
     {
-        $batch = $this->botApi->getUpdates($this->lastReceivedUpdateId + 1, $this->limit, $this->timeout);
+        $batch = $this->botApi->getUpdates($this->lastReceivedUpdateId ? $this->lastReceivedUpdateId + 1 : null, $this->limit, $this->timeout);
         $this->lastReceivedUpdateId = $batch->getLastUpdateId();
         return $batch;
     }

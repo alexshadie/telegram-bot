@@ -9,6 +9,8 @@ interface MessageHandler
 {
     public function isSuitable(Message $message): bool;
 
+    public function beforeHandle(Message $message): void;
+
     public function handle(Message $message, BotApi $botApi): void;
 
     public function isTerminator(): bool;

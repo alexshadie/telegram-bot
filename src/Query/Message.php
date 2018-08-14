@@ -881,8 +881,8 @@ class Message extends Object
         $object->media_group_id = $data->media_group_id ?? null;
         $object->author_signature = $data->author_signature ?? null;
         $object->text = $data->text ?? null;
-        $object->entities = MessageEntity::createFromObject($data->entities ?? null);
-        $object->caption_entities = MessageEntity::createFromObject($data->caption_entities ?? null);
+        $object->entities = MessageEntity::createFromObjectList($data->entities ?? null);
+        $object->caption_entities = MessageEntity::createFromObjectList($data->caption_entities ?? null);
         $object->audio = Audio::createFromObject($data->audio ?? null);
         $object->document = Document::createFromObject($data->document ?? null);
         $object->game = Game::createFromObject($data->game ?? null);
