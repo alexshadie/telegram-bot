@@ -213,7 +213,6 @@ class BotApi implements BotApiInterface
             'reply_to_message_id' => $replyToMessageId,
             'reply_markup' => $replyMarkup ? $replyMarkup->getMarkup() : null,
         ];
-        error_log(var_export($params, 1));
         $data = $this->query('sendMessage', $params);
         $message = Message::createFromObject($data->result);
         return $message;

@@ -21,19 +21,22 @@ class ReplyMarkup
     {
     }
 
-    public function setInlineKeyboard(?InlineKeyboardMarkup $inlineKeyboardMarkup)
+    public function setInlineKeyboard(?InlineKeyboardMarkup $inlineKeyboardMarkup): ReplyMarkup
     {
         $this->inlineKeyboard = $inlineKeyboardMarkup;
+        return $this;
     }
 
-    public function setReplyKeyboard(?ReplyKeyboardMarkup $replyKeyboardMarkup)
+    public function setReplyKeyboard(?ReplyKeyboardMarkup $replyKeyboardMarkup): ReplyMarkup
     {
         $this->replyKeyboard = $replyKeyboardMarkup;
+        return $this;
     }
 
-    public function setReplyKeyboardRemove(?ReplyKeyboardRemove $replyKeyboardRemove)
+    public function setReplyKeyboardRemove(?ReplyKeyboardRemove $replyKeyboardRemove): ReplyMarkup
     {
         $this->replyKeyboardRemove = $replyKeyboardRemove;
+        return $this;
     }
 
     public function getMarkup()
