@@ -118,4 +118,18 @@ class KeyboardButton extends Object
         return $objects;
     }
 
+    public function getMarkup() {
+        $result = [];
+        if ($this->text) {
+            $result['text'] = $this->text;
+        }
+        if ($this->request_contact) {
+            $result['request_contact'] = $this->request_contact;
+        }
+        if ($this->request_location) {
+            $result['request_location'] = $this->request_location;
+        }
+        return $result;
+    }
+
 }

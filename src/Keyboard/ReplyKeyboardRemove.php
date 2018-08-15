@@ -103,4 +103,15 @@ class ReplyKeyboardRemove extends Object
         return $objects;
     }
 
+    public function getMarkup() {
+        $markup = [];
+        if ($this->remove_keyboard) {
+            $markup['remove_keyboard'] = $this->remove_keyboard;
+        }
+        if ($this->selective) {
+            $markup['selective'] = $this->selective;
+        }
+        return $markup;
+    }
+
 }

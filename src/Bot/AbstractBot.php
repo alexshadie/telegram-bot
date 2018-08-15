@@ -5,7 +5,9 @@ namespace alexshadie\TelegramBot\Bot;
 
 
 use alexshadie\TelegramBot\Bot\Exception\BotException;
+use alexshadie\TelegramBot\Keyboard\InlineKeyboardMarkup;
 use alexshadie\TelegramBot\MessageDispatcher\MessageDispatcherInterface;
+use alexshadie\TelegramBot\Objects\ReplyMarkup;
 use alexshadie\TelegramBot\Objects\User;
 use alexshadie\TelegramBot\Query\Message;
 use alexshadie\TelegramBot\Query\Update;
@@ -131,5 +133,21 @@ abstract class AbstractBot implements BotInterface
             throw new BotException("Invalid bot configuration");
         }
         return $this->botApi->sendMessage($chatId, $message);
+    }
+
+    public function sayWithMarkup($chatId, string $message, ReplyMarkup $keyboardMarkup) {
+        if (is_null($this->botApi)) {
+            throw new BotException("Invalid bot configuration");
+        }
+
+        return $this->botApi->sendMessage(
+            $chatId,
+            $message,
+            null,
+            null,
+            null,
+            null,
+            $keyboardMarkup
+        );
     }
 }

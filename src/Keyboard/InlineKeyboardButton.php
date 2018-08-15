@@ -2,8 +2,8 @@
 
 namespace alexshadie\TelegramBot\Keyboard;
 
-use alexshadie\TelegramBot\Objects\Object;
 use alexshadie\TelegramBot\Game\CallbackGame;
+use alexshadie\TelegramBot\Objects\Object;
 
 /**
  * This object represents one button of an inline keyboard. You must use exactly one of the optional fields.
@@ -167,10 +167,10 @@ class InlineKeyboardButton extends Object
     }
 
     /**
-      * Creates InlineKeyboardButton object from data.
-      * @param \stdClass $data
-      * @return InlineKeyboardButton
-      */
+     * Creates InlineKeyboardButton object from data.
+     * @param \stdClass $data
+     * @return InlineKeyboardButton
+     */
     public static function createFromObject(?\stdClass $data): ?InlineKeyboardButton
     {
         if (is_null($data)) {
@@ -191,10 +191,10 @@ class InlineKeyboardButton extends Object
     }
 
     /**
-      * Creates array of InlineKeyboardButton objects from data.
-      * @param array $data
-      * @return InlineKeyboardButton[]
-      */
+     * Creates array of InlineKeyboardButton objects from data.
+     * @param array $data
+     * @return InlineKeyboardButton[]
+     */
     public static function createFromObjectList(?array $data): ?array
     {
         if (is_null($data)) {
@@ -207,4 +207,29 @@ class InlineKeyboardButton extends Object
         return $objects;
     }
 
+    public function getMarkup()
+    {
+        $result = [
+            'text' => $this->getText(),
+        ];
+        if ($this->getUrl()) {
+            $result['url'] = $this->getUrl();
+        }
+        if ($this->getCallbackData()) {
+            $result['callback_data'] = $this->getCallbackData();
+        }
+        if ($this->getSwitchInlineQuery()) {
+            $result['switch_inline_query'] = $this->getSwitchInlineQuery();
+        }
+        if ($this->getSwitchInlineQueryCurrentChat()) {
+            $result['switch_inline_query_current_chat'] = $this->getSwitchInlineQueryCurrentChat();
+        }
+        if ($this->getCallbackGame()) {
+            $result['callback_game'] = $this->getCallbackGame();
+        }
+        if ($this->getPay()) {
+            $result['pay'] = $this->getPay();
+        }
+        return $result;
+    }
 }

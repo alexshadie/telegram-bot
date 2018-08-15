@@ -13,6 +13,7 @@ use alexshadie\TelegramBot\Inline\InputMedia;
 use alexshadie\TelegramBot\Keyboard\InlineKeyboardMarkup;
 use alexshadie\TelegramBot\Message\File;
 use alexshadie\TelegramBot\Objects\InputFile;
+use alexshadie\TelegramBot\Objects\ReplyMarkup;
 use alexshadie\TelegramBot\Objects\User;
 use alexshadie\TelegramBot\Objects\UserProfilePhotos;
 use alexshadie\TelegramBot\Objects\WebhookInfo;
@@ -132,13 +133,13 @@ interface BotApiInterface
      * @param bool $disableWebPagePreview Disables link previews for links in this message
      * @param bool $disableNotification Sends the message silently. Users will receive a notification with no sound.
      * @param int $replyToMessageId If the message is a reply, ID of the original message
-     * @param mixed $replyMarkup Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard,
+     * @param ReplyMarkup|null $replyMarkup Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard,
      *     instructions to remove reply keyboard or to force a reply from the user.
      * @return Message
      * @throws TelegramResponseException
      * @throws \ErrorException
      */
-    public function sendMessage(string $chatId, string $text, ?string $parseMode = null, ?bool $disableWebPagePreview = null, ?bool $disableNotification = null, ?int $replyToMessageId = null, $replyMarkup = null): Message;
+    public function sendMessage(string $chatId, string $text, ?string $parseMode = null, ?bool $disableWebPagePreview = null, ?bool $disableNotification = null, ?int $replyToMessageId = null, ?ReplyMarkup $replyMarkup = null): Message;
 
     /**
      * Use this method to forward messages of any kind. On success, the sent Message is returned.

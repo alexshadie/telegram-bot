@@ -146,4 +146,26 @@ class ReplyKeyboardMarkup extends Object
         return $objects;
     }
 
+    public function getMarkup()
+    {
+        $result = [];
+
+        $buttons = [];
+        foreach ($this->keyboard as $button) {
+            $buttons[] = $button->getMarkup();
+        }
+        $result['keyboard'] = [$buttons];
+        if ($this->resize_keyboard) {
+            $result['resize_keyboard'] = $this->resize_keyboard;
+        }
+        if ($this->one_time_keyboard) {
+            $result['one_time_keyboard'] = $this->one_time_keyboard;
+        }
+        if ($this->selective) {
+            $result['selective'] = $this->selective;
+        }
+
+        return $result;
+    }
+
 }

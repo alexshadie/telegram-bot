@@ -30,6 +30,12 @@ class InlineKeyboardMarkup extends Object
         $this->inline_keyboard = $inlineKeyboard;
     }
 
+    public function addButton(InlineKeyboardButton $button): InlineKeyboardMarkup
+    {
+        $this->inline_keyboard[] = $button;
+        return $this;
+    }
+
     /**
      * Array of button rows, each represented by an Array of InlineKeyboardButton objects
      *
@@ -41,10 +47,10 @@ class InlineKeyboardMarkup extends Object
     }
 
     /**
-      * Creates InlineKeyboardMarkup object from data.
-      * @param \stdClass $data
-      * @return InlineKeyboardMarkup
-      */
+     * Creates InlineKeyboardMarkup object from data.
+     * @param \stdClass $data
+     * @return InlineKeyboardMarkup
+     */
     public static function createFromObject(?\stdClass $data): ?InlineKeyboardMarkup
     {
         if (is_null($data)) {
@@ -59,10 +65,10 @@ class InlineKeyboardMarkup extends Object
     }
 
     /**
-      * Creates array of InlineKeyboardMarkup objects from data.
-      * @param array $data
-      * @return InlineKeyboardMarkup[]
-      */
+     * Creates array of InlineKeyboardMarkup objects from data.
+     * @param array $data
+     * @return InlineKeyboardMarkup[]
+     */
     public static function createFromObjectList(?array $data): ?array
     {
         if (is_null($data)) {
@@ -73,6 +79,15 @@ class InlineKeyboardMarkup extends Object
             $objects[] = static::createFromObject($row);
         }
         return $objects;
+    }
+
+    public function getMarkup()
+    {
+        $result = [];
+        foreach ($this->inline_keyboard as $button) {
+            $result[] = $button->getMarkup();
+        }
+        return ['inline_keyboard' => [$result]];
     }
 
 }
