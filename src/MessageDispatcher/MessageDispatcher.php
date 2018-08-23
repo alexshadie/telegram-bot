@@ -4,6 +4,7 @@ namespace alexshadie\TelegramBot\MessageDispatcher;
 
 
 use alexshadie\TelegramBot\Bot\BotApi;
+use alexshadie\TelegramBot\Query\CallbackQuery;
 use alexshadie\TelegramBot\Query\Message;
 
 class MessageDispatcher implements MessageDispatcherInterface
@@ -13,6 +14,11 @@ class MessageDispatcher implements MessageDispatcherInterface
      */
     private $handlers = [];
 
+    /**
+     * @var CallbackQueryHandler[][]
+     */
+    private $callbackQueryHandlers = [];
+
     /** @var BotApi */
     private $botApi;
 
@@ -21,12 +27,12 @@ class MessageDispatcher implements MessageDispatcherInterface
         $this->botApi = $botApi;
     }
 
-    protected function setupHandler(MessageHandler $handler): void
+    protected function setupHandler(CommonHandler $handler): void
     {
         // Perform setup operations for each handler, e.g. dependency injections and so on
     }
 
-    protected function beforeDispatch(Message $message): void
+    protected function beforeDispatch($message): void
     {
         // Performs pre-dispatch initialization
     }
@@ -41,10 +47,36 @@ class MessageDispatcher implements MessageDispatcherInterface
         $this->handlers[$priority][] = $handler;
     }
 
+    public function addCallbackQueryHandler(CallbackQueryHandler $handler, int $priority = 100): void
+    {
+        if (!isset($this->callbackQueryHandlers[$priority])) {
+            $this->callbackQueryHandlers[$priority] = [];
+            ksort($this->callbackQueryHandlers);
+        }
+        $this->setupHandler($handler);
+        $this->callbackQueryHandlers[$priority][] = $handler;
+    }
+
     public function dispatch(Message $message): void
     {
         $this->beforeDispatch($message);
         foreach ($this->handlers as $handlerList) {
+            foreach ($handlerList as $handler) {
+                if ($handler->isSuitable($message)) {
+                    $handler->beforeHandle($message);
+                    $handler->handle($message, $this->botApi);
+                    if ($handler->isTerminator()) {
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    public function dispatchCallbackQuery(CallbackQuery $message): void
+    {
+        $this->beforeDispatch($message);
+        foreach ($this->callbackQueryHandlers as $handlerList) {
             foreach ($handlerList as $handler) {
                 if ($handler->isSuitable($message)) {
                     $handler->beforeHandle($message);

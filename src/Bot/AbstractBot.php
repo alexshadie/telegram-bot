@@ -93,7 +93,11 @@ abstract class AbstractBot implements BotInterface
         if ($update->getMessage()) {
             $this->messageDispatcher->dispatch($update->getMessage());
             $this->logger && $this->logger->debug("Message received");
+        } elseif ($update->getCallbackQuery()) {
+            $this->messageDispatcher->dispatchCallbackQuery($update->getCallbackQuery());
+            $this->logger->debug('callback query');
         } else {
+            $this->logger->debug(var_export($update, 1));
             $this->logger && $this->logger->debug("Unsupported query");
             return false;
         }
