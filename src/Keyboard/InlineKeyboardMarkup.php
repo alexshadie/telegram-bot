@@ -21,6 +21,12 @@ class InlineKeyboardMarkup extends Object
     private $inline_keyboard;
 
     /**
+     * Current row of keyboard
+     * @var int
+     */
+    private $currentRow = 0;
+
+    /**
      * InlineKeyboardMarkup constructor.
      *
      * @param InlineKeyboardButton[] $inlineKeyboard
@@ -32,8 +38,13 @@ class InlineKeyboardMarkup extends Object
 
     public function addButton(InlineKeyboardButton $button): InlineKeyboardMarkup
     {
-        $this->inline_keyboard[] = $button;
+        $this->inline_keyboard[$this->currentRow][] = $button;
         return $this;
+    }
+
+    public function nextRow()
+    {
+        $this->currentRow++;
     }
 
     /**
@@ -84,10 +95,14 @@ class InlineKeyboardMarkup extends Object
     public function getMarkup()
     {
         $result = [];
-        foreach ($this->inline_keyboard as $button) {
-            $result[] = $button->getMarkup();
+        foreach ($this->inline_keyboard as $btns) {
+            $row = [];
+            foreach ($btns as $button) {
+                $row[] = $button->getMarkup();
+            }
+            $result[] = $row;
         }
-        return ['inline_keyboard' => [$result]];
+        return ['inline_keyboard' => $result];
     }
 
 }

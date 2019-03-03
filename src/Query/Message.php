@@ -895,7 +895,7 @@ class Message extends Object
         $object->contact = Contact::createFromObject($data->contact ?? null);
         $object->location = Location::createFromObject($data->location ?? null);
         $object->venue = Venue::createFromObject($data->venue ?? null);
-        $object->new_chat_members = User::createFromObject($data->new_chat_members ?? null);
+        $object->new_chat_members = User::createFromObjectList($data->new_chat_members ?? null);
         $object->left_chat_member = User::createFromObject($data->left_chat_member ?? null);
         $object->new_chat_title = $data->new_chat_title ?? null;
         $object->new_chat_photo = PhotoSize::createFromObject($data->new_chat_photo ?? null);

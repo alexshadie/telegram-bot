@@ -139,6 +139,14 @@ abstract class AbstractBot implements BotInterface
         return $this->botApi->sendMessage($chatId, $message);
     }
 
+    public function editMessage($chatId, $messageId, $messageText): Message
+    {
+        if (is_null($this->botApi)) {
+            throw new BotException("Invalid bot configuration");
+        }
+        return $this->botApi->editMessageText($chatId, $messageId, null, $messageText);
+    }
+
     public function sayWithMarkup($chatId, string $message, ReplyMarkup $keyboardMarkup) {
         if (is_null($this->botApi)) {
             throw new BotException("Invalid bot configuration");

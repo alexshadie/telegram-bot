@@ -204,6 +204,8 @@ class BotApi implements BotApiInterface
      */
     public function sendMessage(string $chatId, string $text, ?string $parseMode = null, ?bool $disableWebPagePreview = null, ?bool $disableNotification = null, ?int $replyToMessageId = null, ?ReplyMarkup $replyMarkup = null): Message
     {
+        // TODO: return not only last message
+        // TODO: Fix message breaking
         $params = [
             'chat_id' => $chatId,
             'text' => $text,
@@ -213,7 +215,16 @@ class BotApi implements BotApiInterface
             'reply_to_message_id' => $replyToMessageId,
             'reply_markup' => $replyMarkup ? $replyMarkup->getMarkup() : null,
         ];
-        $data = $this->query('sendMessage', $params);
+        $chunks = [];
+        do {
+            $chunks[] = mb_substr($text, 0, 2048);
+            $text = mb_substr($text, 2048);
+        } while(mb_strlen($text) > 0);
+
+        foreach ($chunks as $chunk) {
+            $params['text'] = $chunk;
+            $data = $this->query('sendMessage', $params);
+        }
         $message = Message::createFromObject($data->result);
         return $message;
     }
