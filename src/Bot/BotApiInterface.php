@@ -769,7 +769,7 @@ interface BotApiInterface
      * @throws TelegramResponseException
      * @throws \ErrorException
      */
-    public function editMessageText(?string $chatId = null, ?int $messageId = null, ?string $inlineMessageId = null, string $text, ?string $parseMode = null, ?bool $disableWebPagePreview = null, ?InlineKeyboardMarkup $replyMarkup = null): Message;
+    public function editMessageText(?string $chatId = null, ?int $messageId = null, ?string $inlineMessageId = null, string $text, ?string $parseMode = null, ?bool $disableWebPagePreview = null, ?ReplyMarkup $replyMarkup = null): ?Message;
 
     /**
      * Use this method to edit captions of messages sent by the bot or via the bot (for inline bots). On success, if edited

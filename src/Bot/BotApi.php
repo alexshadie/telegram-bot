@@ -1216,7 +1216,7 @@ class BotApi implements BotApiInterface
      * @throws TelegramResponseException
      * @throws \ErrorException
      */
-    public function editMessageText(?string $chatId = null, ?int $messageId = null, ?string $inlineMessageId = null, string $text, ?string $parseMode = null, ?bool $disableWebPagePreview = null, ?InlineKeyboardMarkup $replyMarkup = null): Message
+    public function editMessageText(?string $chatId = null, ?int $messageId = null, ?string $inlineMessageId = null, string $text, ?string $parseMode = null, ?bool $disableWebPagePreview = null, ?ReplyMarkup $replyMarkup = null): ?Message
     {
         $params = [
             'chat_id' => $chatId,
@@ -1225,7 +1225,7 @@ class BotApi implements BotApiInterface
             'text' => $text,
             'parse_mode' => $parseMode,
             'disable_web_page_preview' => $disableWebPagePreview,
-            'reply_markup' => $replyMarkup,
+            'reply_markup' => $replyMarkup ? $replyMarkup->getMarkup() : null,
         ];
         $data = $this->query('editMessageText', $params);
         return Message::createFromObject($data->result);
@@ -1784,6 +1784,9 @@ class BotApi implements BotApiInterface
         $data = json_decode($server_output);
 
         if (!isset($data->ok) || !$data->ok) {
+            if ($data->description = 'Bad Request: message is not modified') {
+                return $data;
+            }
             throw new TelegramResponseException(
                 $data->description ?? "",
                 $data->error_code ?? 0,
