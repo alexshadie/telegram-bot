@@ -5,7 +5,7 @@ require __DIR__ . "/../../vendor/autoload.php";
 $logger = new \Monolog\Logger("telegram-bot");
 list($bot_name, $bot_key) = include(__DIR__ . '/../auth.php');
 
-$botApi = new \alexshadie\TelegramBot\Bot\BotApi($bot_name, $bot_key, $logger);
+$botApi = new \alexshadie\TelegramBot\Bot\BotApi($bot_name, $bot_key, "https://api.telegram.org", $logger);
 
 $messageDispatcher = new \alexshadie\TelegramBot\MessageDispatcher\MessageDispatcher($botApi);
 $messageDispatcher->addHandler(

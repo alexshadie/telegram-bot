@@ -32,6 +32,8 @@ class BotApi implements BotApiInterface
     protected $bot_key;
     /** @var LoggerInterface */
     protected $logger;
+    /** @var string */
+    protected $telegramApiUrl;
 
     /**
      * BotApi constructor.
@@ -39,11 +41,12 @@ class BotApi implements BotApiInterface
      * @param string $bot_key
      * @param LoggerInterface|null $logger
      */
-    public function __construct(string $bot_name, string $bot_key, LoggerInterface $logger = null)
+    public function __construct(string $bot_name, string $bot_key, string $telegramApiUrl, LoggerInterface $logger = null)
     {
         $this->bot_name = $bot_name;
         $this->bot_key = $bot_key;
         $this->logger = $logger;
+        $this->telegramApiUrl = $telegramApiUrl;
     }
 
     /**
@@ -754,7 +757,7 @@ class BotApi implements BotApiInterface
      */
     public function downloadFile(File $file, string $tmpPath): void
     {
-        file_put_contents($tmpPath, fopen(self::TELEGRAM_URL . '/file/bot' . $this->bot_key . '/' . $file->getFilePath(), 'r'));
+        file_put_contents($tmpPath, fopen($this->telegramApiUrl . '/file/bot' . $this->bot_key . '/' . $file->getFilePath(), 'r'));
     }
 
     /**
@@ -1750,7 +1753,7 @@ class BotApi implements BotApiInterface
      */
     protected function query($method_name, array $data = [], $http_method = 'POST')
     {
-        $url = self::TELEGRAM_URL . '/bot' . $this->bot_key . '/' . $method_name;
+        $url = $this->telegramApiUrl . '/bot' . $this->bot_key . '/' . $method_name;
         $this->logger && $this->logger->debug("Quering {$url}, method: {$http_method}");
         $ch = curl_init($url);
 

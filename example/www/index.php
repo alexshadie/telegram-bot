@@ -8,7 +8,7 @@ list($name, $token, $endpoint) = $config;
 
 $logger = new \Monolog\Logger("telegram-bot");
 
-$webHookBotApi = new \alexshadie\TelegramBot\Bot\BotApi($name, $token, $logger);
+$webHookBotApi = new \alexshadie\TelegramBot\Bot\BotApi($name, $token, "https://api.telegram.org", $logger);
 
 $messageDispatcher = new \alexshadie\TelegramBot\MessageDispatcher\MessageDispatcher($webHookBotApi);
 $messageDispatcher->addHandler(

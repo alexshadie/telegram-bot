@@ -36,13 +36,13 @@ class BotApiTest extends TestCase
         $loggerProp = $class->getProperty("logger");
         $loggerProp->setAccessible(true);
 
-        $botApi = new BotApi("bot_name", "bot_key");
+        $botApi = new BotApi("bot_name", "bot_key", 'https://api.telegram.org');
 
         $this->assertEquals("bot_name", $nameProp->getValue($botApi));
         $this->assertEquals("bot_key", $keyProp->getValue($botApi));
         $this->assertNull($loggerProp->getValue($botApi));
 
-        $botApi = new BotApi("bot_name_1", "bot_key_1", $this->logger);
+        $botApi = new BotApi("bot_name_1", "bot_key_1", "https://api.telegram.org", $this->logger);
         $this->assertEquals("bot_name_1", $nameProp->getValue($botApi));
         $this->assertEquals("bot_key_1", $keyProp->getValue($botApi));
         $this->assertEquals($this->logger, $loggerProp->getValue($botApi));
