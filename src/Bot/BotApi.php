@@ -1314,7 +1314,7 @@ class BotApi implements BotApiInterface
             'message_id' => $messageId,
         ];
         $data = $this->query('deleteMessage', $params);
-        return $data->result;
+        return $data->result ?? false;
     }
 
     /**

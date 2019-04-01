@@ -12,4 +12,6 @@ interface CallbackQueryHandler extends CommonHandler
     public function beforeHandle(CallbackQuery $message): void;
 
     public function handle(CallbackQuery $message, BotApi $botApi): void;
+
+    public function afterHandle(CallbackQuery $message, BotApi $botApi): void;
 }

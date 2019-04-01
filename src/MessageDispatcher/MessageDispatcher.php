@@ -65,6 +65,7 @@ class MessageDispatcher implements MessageDispatcherInterface
                 if ($handler->isSuitable($message)) {
                     $handler->beforeHandle($message);
                     $handler->handle($message, $this->botApi);
+                    $handler->afterHandle($message, $this->botApi);
                     if ($handler->isTerminator()) {
                         return;
                     }
@@ -81,6 +82,7 @@ class MessageDispatcher implements MessageDispatcherInterface
                 if ($handler->isSuitable($message)) {
                     $handler->beforeHandle($message);
                     $handler->handle($message, $this->botApi);
+                    $handler->afterHandle($message, $this->botApi);
                     if ($handler->isTerminator()) {
                         return;
                     }

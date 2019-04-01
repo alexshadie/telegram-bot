@@ -12,4 +12,6 @@ interface MessageHandler extends CommonHandler
     public function beforeHandle(Message $message): void;
 
     public function handle(Message $message, BotApi $botApi): void;
+
+    public function afterHandle(Message $message, BotApi $botApi): void;
 }

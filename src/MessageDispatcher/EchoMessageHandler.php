@@ -28,4 +28,9 @@ class EchoMessageHandler implements MessageHandler
         return true;
     }
 
+    public function afterHandle(Message $message, BotApi $botApi): void
+    {
+        return;
+    }
+
 }
