@@ -886,7 +886,8 @@ class Message extends Object
         $object->audio = Audio::createFromObject($data->audio ?? null);
         $object->document = Document::createFromObject($data->document ?? null);
         $object->game = Game::createFromObject($data->game ?? null);
-        $object->photo = PhotoSize::createFromObject($data->photo ?? null);
+// FIXME:        $object->photo = PhotoSize::createFromObject($data->photo ?? null);
+        $object->photo = PhotoSize::createFromObject(null);
         $object->sticker = Sticker::createFromObject($data->sticker ?? null);
         $object->video = Video::createFromObject($data->video ?? null);
         $object->voice = Voice::createFromObject($data->voice ?? null);
