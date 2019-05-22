@@ -201,11 +201,11 @@ class BotApi implements BotApiInterface
      * @param int $replyToMessageId If the message is a reply, ID of the original message
      * @param ReplyMarkup|null $replyMarkup Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard,
      *     instructions to remove reply keyboard or to force a reply from the user.
-     * @return Message
+     * @return Message|null
      * @throws TelegramResponseException
      * @throws \ErrorException
      */
-    public function sendMessage(string $chatId, string $text, ?string $parseMode = null, ?bool $disableWebPagePreview = null, ?bool $disableNotification = null, ?int $replyToMessageId = null, ?ReplyMarkup $replyMarkup = null): Message
+    public function sendMessage(string $chatId, string $text, ?string $parseMode = null, ?bool $disableWebPagePreview = null, ?bool $disableNotification = null, ?int $replyToMessageId = null, ?ReplyMarkup $replyMarkup = null): ?Message
     {
         // TODO: return not only last message
         // TODO: Fix message breaking
@@ -227,6 +227,10 @@ class BotApi implements BotApiInterface
         foreach ($chunks as $chunk) {
             $params['text'] = $chunk;
             $data = $this->query('sendMessage', $params);
+        }
+        // TODO: Remove after debug
+        if (!isset($data->result) || !$data->result) {
+            error_log("Telegram-response: ", var_export($data, 1));
         }
         $message = Message::createFromObject($data->result);
         return $message;

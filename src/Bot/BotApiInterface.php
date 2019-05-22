@@ -135,11 +135,11 @@ interface BotApiInterface
      * @param int $replyToMessageId If the message is a reply, ID of the original message
      * @param ReplyMarkup|null $replyMarkup Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard,
      *     instructions to remove reply keyboard or to force a reply from the user.
-     * @return Message
+     * @return Message|null
      * @throws TelegramResponseException
      * @throws \ErrorException
      */
-    public function sendMessage(string $chatId, string $text, ?string $parseMode = null, ?bool $disableWebPagePreview = null, ?bool $disableNotification = null, ?int $replyToMessageId = null, ?ReplyMarkup $replyMarkup = null): Message;
+    public function sendMessage(string $chatId, string $text, ?string $parseMode = null, ?bool $disableWebPagePreview = null, ?bool $disableNotification = null, ?int $replyToMessageId = null, ?ReplyMarkup $replyMarkup = null): ?Message;
 
     /**
      * Use this method to forward messages of any kind. On success, the sent Message is returned.
