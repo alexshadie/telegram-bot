@@ -229,9 +229,9 @@ class BotApi implements BotApiInterface
             $data = $this->query('sendMessage', $params);
         }
         // TODO: Remove after debug
-        if (!isset($data->result) || !$data->result) {
+//        if (!isset($data->result) || !$data->result) {
             error_log("Telegram-response: ", var_export($data, 1));
-        }
+//        }
         $message = Message::createFromObject($data->result);
         return $message;
     }

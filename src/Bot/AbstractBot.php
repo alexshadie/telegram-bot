@@ -126,12 +126,12 @@ abstract class AbstractBot implements BotInterface
      *
      * @param int|string $chatId
      * @param string $message
-     * @return Message
+     * @return Message|null
      * @throws \ErrorException
      * @throws Exception\TelegramResponseException
      * @throws Exception\BotException
      */
-    public function say($chatId, string $message): Message
+    public function say($chatId, string $message): ?Message
     {
         if (is_null($this->botApi)) {
             throw new BotException("Invalid bot configuration");
