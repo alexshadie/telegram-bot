@@ -797,12 +797,12 @@ interface BotApiInterface
      *     channel (in the format @channelusername)
      * @param int $messageId Required if inline_message_id is not specified. Identifier of the sent message
      * @param string $inlineMessageId Required if chat_id and message_id are not specified. Identifier of the inline message
-     * @param InlineKeyboardMarkup $replyMarkup A JSON-serialized object for an inline keyboard.
+     * @param ReplyMarkup $replyMarkup A JSON-serialized object for an inline keyboard.
      * @return Message
      * @throws TelegramResponseException
      * @throws \ErrorException
      */
-    public function editMessageReplyMarkup(?string $chatId = null, ?int $messageId = null, ?string $inlineMessageId = null, ?InlineKeyboardMarkup $replyMarkup = null): Message;
+    public function editMessageReplyMarkup(?string $chatId = null, ?int $messageId = null, ?string $inlineMessageId = null, ?ReplyMarkup $replyMarkup = null): Message;
 
     /**
      * Use this method to delete a message, including service messages, with the following limitations:
