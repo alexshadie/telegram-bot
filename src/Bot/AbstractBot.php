@@ -53,6 +53,11 @@ abstract class AbstractBot implements BotInterface
         return $this;
     }
 
+    public function getBotApi(): BotApiInterface
+    {
+        return $this->botApi;
+    }
+
     /**
      * Sets logger
      *
