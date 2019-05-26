@@ -1287,7 +1287,7 @@ class BotApi implements BotApiInterface
             'chat_id' => $chatId,
             'message_id' => $messageId,
             'inline_message_id' => $inlineMessageId,
-            'reply_markup' => $replyMarkup,
+            'reply_markup' => $replyMarkup ? $replyMarkup->getMarkup() : null,
         ];
         $data = $this->query('editMessageReplyMarkup', $params);
         return Message::createFromObject($data->result);
